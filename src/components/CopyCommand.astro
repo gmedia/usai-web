@@ -1,0 +1,38 @@
+---
+import Icon from './Icon.astro';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  cmd: string;
+  lang: Lang;
+  label?: string;
+  class?: string;
+}
+
+const { cmd, lang, label, class: className } = Astro.props;
+const d = t(lang);
+---
+
+<div class:list={['group flex items-center gap-3 rounded-xl border border-line bg-ink/80 py-1.5 pl-4 pr-1.5 backdrop-blur', className]}>
+  <span class="select-none font-mono text-sm text-mint" aria-hidden="true">$</span>
+  <code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap py-1.5 font-mono text-[0.8125rem] text-paper sm:text-sm" aria-label={label}>{cmd}</code>
+  <button
+    type="button"
+    class="copy-btn inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-xs text-muted transition-colors hover:bg-white/5 hover:text-paper"
+    data-copy={cmd}
+    data-copied-label={d.common.copied}
+  >
+    <Icon name="copy" class="copy-i size-4" />
+    <Icon name="check" class="check-i hidden size-4 text-mint" />
+    <span data-copy-label class="sr-only sm:not-sr-only">{d.common.copy}</span>
+  </button>
+</div>
+
+<style>
+  .copy-btn[data-copied] :global(.copy-i) {
+    display: none;
+  }
+  .copy-btn[data-copied] :global(.check-i) {
+    display: block;
+  }
+</style>

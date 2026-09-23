@@ -1,0 +1,30 @@
+---
+import Rich from './Rich.astro';
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  id?: string;
+  align?: 'left' | 'center';
+  as?: 'h1' | 'h2';
+}
+
+const { lang, eyebrow, title, lead, id, align = 'left', as: Tag = 'h2' } = Astro.props;
+---
+
+<div class:list={['max-w-3xl', align === 'center' && 'mx-auto text-center']} data-reveal={Tag === 'h1' ? undefined : ''}>
+  <p class="eyebrow">{eyebrow}</p>
+  <Tag id={id} class:list={['mt-4 font-bold leading-[1.08]', Tag === 'h1' ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-3xl sm:text-4xl lg:text-5xl']}>
+    {title}
+  </Tag>
+  {
+    lead && (
+      <p class="mt-5 text-base leading-relaxed text-muted sm:text-lg">
+        <Rich text={lead} {lang} />
+      </p>
+    )
+  }
+</div>

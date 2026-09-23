@@ -1,0 +1,27 @@
+---
+/** Renders a dictionary string with [[terms]], **bold** and `code`. */
+import Term from './Term.astro';
+import { parseRich, type Lang } from '../i18n';
+
+interface Props {
+  text: string;
+  lang: Lang;
+}
+
+const { text, lang } = Astro.props;
+const segments = parseRich(text);
+---
+
+{
+  segments.map((s) =>
+    s.type === 'text' ? (
+      s.value
+    ) : s.type === 'term' ? (
+      <Term k={s.key} lang={lang} label={s.label} />
+    ) : s.type === 'strong' ? (
+      <strong class="font-semibold text-paper">{s.value}</strong>
+    ) : (
+      <code class="rounded-md bg-white/5 px-1.5 py-0.5 text-[0.9em] text-mint">{s.value}</code>
+    ),
+  )
+}

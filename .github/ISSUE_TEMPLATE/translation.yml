@@ -1,0 +1,17 @@
+name: Translation
+description: Improve a translation or propose a new language.
+labels: [i18n]
+body:
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language
+      options:
+        - Bahasa Indonesia
+        - New language (describe below)
+  - type: textarea
+    id: details
+    attributes:
+      label: Page, current text, proposed text
+    validations:
+      required: true

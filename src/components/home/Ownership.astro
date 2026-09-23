@@ -1,0 +1,72 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import CodeWindow from '../CodeWindow.astro';
+import Rich from '../Rich.astro';
+import Icon from '../Icon.astro';
+import { t, type Lang } from '../../i18n';
+import { snippets } from '../../data/snippets';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const o = t(lang).home.ownership;
+---
+
+<section id="ownership" class="section relative" aria-labelledby="ownership-title">
+  <div class="container-page">
+    <SectionHeading {lang} id="ownership-title" eyebrow={o.eyebrow} title={o.title} lead={o.lead} />
+
+    <div class="mt-12 grid gap-5 lg:grid-cols-2">
+      <div data-reveal>
+        <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-caution"><Icon name="warn" class="size-4" /> {o.antiTitle}</p>
+        <CodeWindow code={snippets.antiPattern} title="src/orders.ts" tone="error" />
+      </div>
+      <div data-reveal data-reveal-delay="0.08">
+        <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-muted"><Icon name="terminal" class="size-4" /> {o.antiCaption}</p>
+        <CodeWindow code={snippets.antiPatternError} lang="text" title="usai dev" tone="error" />
+      </div>
+      <div class="grid gap-5 lg:col-span-2 lg:grid-cols-[1.4fr_1fr] lg:items-center" data-reveal data-reveal-delay="0.16">
+        <div>
+          <p class="mb-3 flex items-center gap-2 text-sm font-semibold text-mint"><Icon name="check" class="size-4" /> {o.fixTitle}</p>
+          <CodeWindow code={snippets.fix} title="src/orders.ts" tone="ok" />
+        </div>
+        <ul class="space-y-2 text-sm leading-relaxed text-muted">
+          <li><Rich text={o.invoke} {lang} /></li>
+          <li><Rich text={o.dispatch} {lang} /></li>
+          <li class="text-dim">{o.dispatchNote}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mt-16 p-6 sm:p-8" data-reveal>
+      <div class="max-w-2xl">
+        <h3 class="text-2xl font-bold sm:text-3xl">{o.dbTitle}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-muted sm:text-base">{o.dbLead}</p>
+      </div>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-[auto_1fr] md:items-stretch">
+        <div class="flex items-center gap-3 rounded-xl border border-line bg-ink/60 px-4 py-3 md:flex-col md:justify-center md:px-6" aria-hidden="true">
+          <Icon name="database" class="size-6 text-mint" />
+          <span class="font-mono text-xs text-muted">query in flight</span>
+        </div>
+        <ol class="grid gap-3 md:grid-cols-3">
+          {
+            o.outcomes.map((out, i) => (
+              <li class:list={['outcome relative rounded-xl border p-4', out.tone === 'warn' ? 'border-caution/30 bg-caution/[0.04]' : 'border-mint/20 bg-mint/[0.03]']}>
+                <p class:list={['font-mono text-[0.65rem] uppercase tracking-[0.16em]', out.tone === 'warn' ? 'text-caution' : 'text-mint']}>
+                  {String(i + 1).padStart(2, '0')} · {out.tone === 'warn' ? 'quarantine → replace' : 'return to pool'}
+                </p>
+                <h4 class="mt-2 font-heading text-base font-semibold">{out.title}</h4>
+                <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                  <Rich text={out.body} {lang} />
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

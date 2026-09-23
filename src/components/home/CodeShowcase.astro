@@ -1,0 +1,74 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import CodeWindow from '../CodeWindow.astro';
+import Rich from '../Rich.astro';
+import { t, type Lang } from '../../i18n';
+import { snippets } from '../../data/snippets';
+import { usai } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const c = d.home.code;
+const files: Record<string, string> = {
+  hello: 'src/app.ts',
+  tasks: 'src/orders/module.ts',
+  cron: 'src/maintenance/module.ts',
+  queue: 'src/orders/queue.ts',
+  socket: 'src/chat/module.ts',
+  service: 'src/ledger/module.ts',
+  test: 'test/app.test.ts',
+};
+---
+
+<section id="code" class="section relative" aria-labelledby="code-title">
+  <div class="container-page">
+    <div class="flex flex-col gap-10">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading {lang} id="code-title" eyebrow={c.eyebrow} title={c.title} lead={c.lead} />
+        <a href={usai.guide} class="btn btn-ghost shrink-0 self-start lg:self-end" rel="noopener" data-reveal>{d.common.readGuide} ↗</a>
+      </div>
+
+      <div data-tabs data-reveal>
+        <div role="tablist" aria-label={c.eyebrow} class="-mx-1 flex gap-1 overflow-x-auto px-1 pb-3">
+          {
+            c.tabs.map((tab, i) => (
+              <button
+                type="button"
+                role="tab"
+                id={`tab-${tab.id}`}
+                aria-controls={`panel-${tab.id}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                class="tab shrink-0 rounded-lg border border-transparent px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:text-paper"
+              >
+                {tab.label}
+              </button>
+            ))
+          }
+        </div>
+        {
+          c.tabs.map((tab, i) => (
+            <div role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} hidden={i !== 0} tabindex="0">
+              <CodeWindow code={snippets[tab.id]} title={files[tab.id]} />
+              <p class="mt-3 text-sm text-muted">
+                <Rich text={tab.caption} {lang} />
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tab[aria-selected='true'] {
+    color: var(--color-paper);
+    border-color: rgb(45 212 191 / 0.35);
+    background: rgb(45 212 191 / 0.08);
+  }
+</style>

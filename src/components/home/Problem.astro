@@ -1,0 +1,40 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import CodeWindow from '../CodeWindow.astro';
+import Rich from '../Rich.astro';
+import CounterProbe from '../islands/CounterProbe.tsx';
+import { t, type Lang } from '../../i18n';
+import { snippets } from '../../data/snippets';
+import { sources } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.home.problem;
+---
+
+<section id="problem" class="section relative" aria-labelledby="problem-title">
+  <div class="container-page">
+    <div class="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-end">
+      <SectionHeading {lang} id="problem-title" eyebrow={p.eyebrow} title={p.title} lead={p.lead} />
+      <div data-reveal data-reveal-delay="0.1">
+        <CodeWindow code={snippets.counter} title={p.codeCaption} />
+      </div>
+    </div>
+
+    <div class="mt-10" data-reveal>
+      <CounterProbe client:visible labels={p.demo} />
+    </div>
+
+    <div class="mt-6 grid gap-4 text-sm leading-relaxed text-muted md:grid-cols-2" data-reveal>
+      <p><Rich text={p.explain} {lang} /></p>
+      <p>
+        {p.note}
+        <a class="link ml-1" href={sources.sweep} rel="noopener">{d.common.source} ↗</a>
+      </p>
+    </div>
+  </div>
+</section>

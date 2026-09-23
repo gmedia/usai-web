@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import Seo, { type PageKey } from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { t, localeMeta, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  path: string;
+  page: PageKey;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  graph?: Record<string, unknown>[];
+  breadcrumb?: string;
+}
+
+const { lang, path, page, title, description, noindex, graph, breadcrumb } = Astro.props;
+const d = t(lang);
+---
+
+<!doctype html>
+<html lang={localeMeta[lang].htmlLang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#03110f" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo {lang} {path} {page} {title} {description} {noindex} {graph} {breadcrumb} />
+    <script is:inline>
+      // Hide reveal targets only when motion will actually run; a safety
+      // timer shows everything if the motion bundle never arrives.
+      (function () {
+        var d = document.documentElement;
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('js-motion');
+          setTimeout(function () {
+            if (!d.hasAttribute('data-motion-ready')) d.classList.remove('js-motion');
+          }, 2500);
+        }
+      })();
+    </script>
+  </head>
+  <body class="antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-teal focus:px-4 focus:py-2 focus:text-white"
+      >{d.nav.skip}</a
+    >
+    <Header {lang} {path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer {lang} />
+    <script>
+      import '../scripts/ui';
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

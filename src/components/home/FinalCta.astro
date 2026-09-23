@@ -1,0 +1,36 @@
+---
+import iconSvg from '../../assets/brand/usai-icon.svg?raw';
+import Icon from '../Icon.astro';
+import { t, localePath, type Lang } from '../../i18n';
+import { usai } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const f = d.home.final;
+const mark = iconSvg.replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+---
+
+<section class="section relative overflow-hidden" aria-labelledby="final-title">
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_55%_at_50%_60%,rgb(14_122_114/0.35),transparent)]" aria-hidden="true"></div>
+  <div class="container-page text-center" data-reveal>
+    <span class="mx-auto block w-16 [&>svg]:h-auto [&>svg]:w-full" set:html={mark} />
+    <h2 id="final-title" class="mx-auto mt-8 max-w-3xl text-4xl font-extrabold sm:text-6xl">
+      <span class="text-gradient">{f.title}</span>
+    </h2>
+    <p class="mx-auto mt-5 max-w-xl text-muted sm:text-lg">{f.body}</p>
+    <div class="mt-9 flex flex-wrap justify-center gap-3">
+      <a href={localePath(lang, '/#quickstart')} class="btn btn-primary">
+        {d.common.getStarted}
+        <Icon name="arrow" class="size-4" />
+      </a>
+      <a href={usai.repo} class="btn btn-ghost" rel="noopener">
+        <Icon name="github" class="size-4" />
+        {d.common.starGithub}
+      </a>
+    </div>
+  </div>
+</section>

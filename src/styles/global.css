@@ -1,0 +1,296 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+/*
+ * Brand tokens. Source of truth: gmedia/usai docs/brand and the usai-docs
+ * brand guidelines. Roles on this (dark) site:
+ *   deep     #083D3A  Deep Teal — surfaces, hero depth
+ *   teal     #0E7A72  Primary Teal — buttons, links, focus
+ *   mint     #2DD4BF  the CLI accent — glow, highlights, "Usai" in charts
+ *   arm-*    the six-stop gradient of the logo's right arm
+ * Do not add hues outside this palette (see AGENTS.md → Brand).
+ */
+@theme {
+  --color-ink: #03110f;
+  --color-abyss: #051c1a;
+  --color-deep: #083d3a;
+  --color-deep-2: #0b4a46;
+  --color-teal: #0e7a72;
+  --color-teal-600: #0c6a64;
+  --color-mint: #2dd4bf;
+  --color-mint-soft: #4ebfaa;
+  --color-arm-1: #177971;
+  --color-arm-3: #31978a;
+  --color-arm-5: #4fbba7;
+  --color-charcoal: #1f2937;
+  --color-fog: #e5e7eb;
+  --color-paper: #fafbfc;
+  --color-muted: #a3bcb7;
+  --color-dim: #6f8f89;
+  --color-line: rgb(229 231 235 / 0.1);
+  --color-caution: #f2c572;
+
+  --font-heading: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gradient-arm: linear-gradient(147deg, #177971 0%, #31978a 40%, #4fbba7 80%, #4ebfaa 100%);
+    --header-h: 4rem;
+  }
+
+  html {
+    background: var(--color-ink);
+    color: var(--color-fog);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-ink);
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    color: var(--color-paper);
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+
+  ::selection {
+    background: rgb(45 212 191 / 0.3);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Grid/flex items default to min-width:auto, so a wide <pre> would stretch
+     the page on phones. Let them shrink; code blocks scroll instead. */
+  .grid > *,
+  .flex > * {
+    min-width: 0;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-mint);
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, #e9fffb 0%, #7de8d6 45%, #2dd4bf 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s,
+      transform 0.2s var(--ease-out-soft);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--color-teal);
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 10px 30px -12px rgb(45 212 191 / 0.55);
+  }
+  .btn-primary:hover {
+    background: #11897f;
+  }
+  .btn-ghost {
+    border: 1px solid rgb(229 231 235 / 0.18);
+    color: var(--color-paper);
+    background: rgb(255 255 255 / 0.02);
+  }
+  .btn-ghost:hover {
+    border-color: rgb(45 212 191 / 0.6);
+    background: rgb(45 212 191 / 0.06);
+  }
+
+  .card {
+    border: 1px solid var(--color-line);
+    background: linear-gradient(180deg, rgb(11 74 70 / 0.28), rgb(5 28 26 / 0.4));
+    border-radius: 1.25rem;
+  }
+
+  .link {
+    color: var(--color-mint);
+    text-decoration: underline;
+    text-decoration-color: rgb(45 212 191 / 0.35);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .section {
+    padding-block: 5rem;
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 7.5rem;
+    }
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgb(229 231 235 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(229 231 235 / 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Astro <Code> blocks */
+  .code-frame pre.astro-code {
+    margin: 0;
+    padding: 1.1rem 1.2rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    background: transparent !important;
+    tab-size: 2;
+  }
+  @media (min-width: 768px) {
+    .code-frame pre.astro-code {
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Scroll reveals (scripts/motion.ts). Visible by default; hidden only
+     while motion is active and the element has not been seen yet. */
+  .js-motion [data-reveal] {
+    transition:
+      opacity 0.8s var(--ease-out-soft),
+      transform 0.8s var(--ease-out-soft);
+  }
+  .js-motion [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Counter probe island */
+@layer components {
+  .counter-pop {
+    animation: counter-pop 0.45s var(--ease-out-soft);
+  }
+  @keyframes counter-pop {
+    from {
+      transform: translateY(8px) scale(0.92);
+      opacity: 0.2;
+    }
+  }
+  .world-dot {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 9999px;
+    border: 1px dashed rgb(45 212 191 / 0.35);
+    transition:
+      transform 0.35s var(--ease-out-soft),
+      background-color 0.35s,
+      box-shadow 0.35s,
+      opacity 0.5s;
+  }
+  .world-dot.born {
+    background: var(--color-mint);
+    border-color: var(--color-mint);
+    box-shadow: 0 0 0 6px rgb(45 212 191 / 0.15), 0 0 24px rgb(45 212 191 / 0.6);
+    transform: scale(1.15);
+  }
+  .world-dot.ended {
+    opacity: 0.35;
+    transform: scale(0.6);
+  }
+}
+
+@layer components {
+  .code-frame.code-wrap pre.astro-code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

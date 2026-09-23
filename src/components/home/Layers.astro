@@ -1,0 +1,123 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import { t, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const l = t(lang).home.layers;
+const accents = ['persistent', 'definition', 'world'] as const;
+---
+
+<section id="how" class="section relative overflow-hidden" aria-labelledby="layers-title">
+  <div class="grid-bg pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(70%_60%_at_50%_40%,black,transparent)]" aria-hidden="true"></div>
+  <div class="container-page">
+    <SectionHeading {lang} id="layers-title" eyebrow={l.eyebrow} title={l.title} lead={l.lead} />
+
+    <ol class="layers mt-14 grid gap-5 lg:grid-cols-3">
+      {
+        l.items.map((item, i) => (
+          <li class:list={['layer card relative flex flex-col overflow-hidden p-6 sm:p-7', `layer-${accents[i]}`]} data-reveal data-reveal-delay={String(i * 0.08)}>
+            <div class="layer-visual" aria-hidden="true">
+              {i === 0 && <span class="bar-persistent" />}
+              {i === 1 && (
+                <span class="flex gap-1.5">
+                  {Array.from({ length: 6 }).map(() => <span class="copy" />)}
+                </span>
+              )}
+              {i === 2 && (
+                <span class="flex items-end gap-2">
+                  {Array.from({ length: 7 }).map((_, j) => <span class="spark" style={`--d:${j * 0.35}s`} />)}
+                </span>
+              )}
+            </div>
+            <p class="mt-6 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-mint">
+              {String(i + 1).padStart(2, '0')} · {item.life}
+            </p>
+            <h3 class="mt-2 text-xl font-bold sm:text-2xl">{item.name}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted sm:text-base">{item.body}</p>
+            <ul class="mt-5 flex flex-wrap gap-1.5">
+              {item.examples.map((e) => (
+                <li class="rounded-md border border-line bg-white/[0.02] px-2 py-1 font-mono text-[0.7rem] text-fog/80">{e}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="mx-auto mt-12 max-w-2xl text-center font-heading text-xl font-semibold text-paper sm:text-2xl" data-reveal>
+      “{l.principle}”
+    </p>
+  </div>
+</section>
+
+<style>
+  .layer-visual {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.25rem;
+    border-radius: 0.75rem;
+    background: rgb(3 17 15 / 0.6);
+    border: 1px solid var(--color-line);
+    padding-inline: 1rem;
+  }
+  .bar-persistent {
+    display: block;
+    height: 6px;
+    width: 100%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #177971, #4ebfaa);
+    box-shadow: 0 0 18px rgb(45 212 191 / 0.45);
+  }
+  .copy {
+    display: block;
+    width: 1.35rem;
+    height: 1.6rem;
+    border-radius: 0.3rem;
+    border: 1px solid rgb(45 212 191 / 0.45);
+    background: rgb(45 212 191 / 0.08);
+  }
+  .copy:first-child {
+    background: rgb(45 212 191 / 0.3);
+  }
+  .spark {
+    display: block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 9999px;
+    background: var(--color-mint);
+    box-shadow: 0 0 14px rgb(45 212 191 / 0.8);
+    animation: spark 2.6s ease-in-out infinite;
+    animation-delay: var(--d);
+    opacity: 0;
+  }
+  @keyframes spark {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.4);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(-4px) scale(1);
+    }
+    80%,
+    100% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.3);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spark {
+      opacity: 0.8;
+      animation: none;
+    }
+  }
+</style>

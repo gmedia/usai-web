@@ -1,20 +1,50 @@
 {
   "name": "usai-web",
-  "type": "module",
+  "description": "The website of Usai, a workload-native application runtime — usai.sakala.dev",
   "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://usai.sakala.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmedia/usai-web.git"
+  },
   "engines": {
     "node": ">=22.12.0"
   },
+  "packageManager": "pnpm@12.3.4",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check && node scripts/check-content.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "verify": "astro check && astro build && node scripts/check-content.mjs",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.4"
+    "@astrojs/react": "^6.0.6",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "~7.3.3",
+    "lenis": "^1.3.26",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3"
   },
-  "allowScripts": {
-    "esbuild": true
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "satori": "^0.33.4",
+    "shiki": "4.4.3",
+    "typescript": "^6.0.3"
   }
 }

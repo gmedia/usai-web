@@ -1,0 +1,29 @@
+name: Website bug
+description: Something on usai.sakala.dev looks or behaves wrong.
+labels: [bug]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      placeholder: https://usai.sakala.dev/benchmarks/
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser, OS, screen width
+      placeholder: Safari 26 on iOS, 390 px
+  - type: checkboxes
+    id: motion
+    attributes:
+      label: Settings
+      options:
+        - label: Reduced motion is enabled
+        - label: JavaScript is disabled

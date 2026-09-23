@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import { t, type Lang } from '../i18n';
+import { usai } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const b = d.brand;
+---
+
+<Base {lang} path="/brand/" page="brand" title={b.meta.title} description={b.meta.description} breadcrumb={d.footer.brand}>
+  <section class="relative overflow-hidden pb-12 pt-32 sm:pt-40">
+    <div class="container-page">
+      <SectionHeading {lang} as="h1" eyebrow={b.eyebrow} title={b.title} lead={b.lead} />
+    </div>
+  </section>
+
+  <section class="pb-20" aria-labelledby="logos-title">
+    <div class="container-page">
+      <h2 id="logos-title" class="eyebrow">{b.logosTitle}</h2>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          b.logos.map((l) => (
+            <li class="card overflow-hidden" data-reveal>
+              <div class:list={['flex h-40 items-center justify-center p-8', l.dark ? 'bg-deep' : 'bg-paper']}>
+                <img src={`/brand/${l.file}`} alt={`Usai — ${l.name}`} class="max-h-20 w-auto max-w-full" loading="lazy" decoding="async" />
+              </div>
+              <div class="flex items-center justify-between gap-3 p-4">
+                <div>
+                  <p class="font-heading text-sm font-semibold text-paper">{l.name}</p>
+                  <p class="text-xs text-dim">{l.note}</p>
+                </div>
+                <a href={`/brand/${l.file}`} download class="btn btn-ghost !min-h-9 !px-3 text-xs">
+                  <Icon name="download" class="size-4" /> SVG
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-4 text-sm text-muted">
+        PNG: <a class="link" href="/brand/png/usai-logo.png" download>usai-logo.png</a>, <a class="link" href="/brand/png/usai-logo-white.png" download>usai-logo-white.png</a>, <a class="link" href="/brand/png/usai-icon.png" download>usai-icon.png</a>, <a class="link" href="/brand/png/icon-512.png" download>icon-512.png</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-20" aria-labelledby="colors-title">
+    <div class="container-page">
+      <h2 id="colors-title" class="eyebrow">{b.colorsTitle}</h2>
+      <ul class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        {
+          b.colors.map((c) => (
+            <li class="card overflow-hidden" data-reveal>
+              <div class="h-24 border-b border-line" style={`background:${c.hex}`} />
+              <div class="p-3">
+                <p class="font-heading text-sm font-semibold text-paper">{c.name}</p>
+                <button type="button" class="font-mono text-xs text-mint hover:underline" data-copy={c.hex} data-copied-label={d.common.copied}>
+                  <span data-copy-label>{c.hex}</span>
+                </button>
+                <p class="mt-1 text-xs text-dim">{c.role}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-4 h-3 rounded-full" style="background: var(--gradient-arm)" aria-hidden="true"></div>
+      <p class="mt-2 font-mono text-xs text-dim">#177971 → #23867B → #31978A → #43AC9B → #4FBBA7 → #4EBFAA</p>
+    </div>
+  </section>
+
+  <section class="pb-20" aria-labelledby="words-title">
+    <div class="container-page grid gap-6 lg:grid-cols-2">
+      <div class="card p-6 sm:p-7" data-reveal>
+        <h2 id="words-title" class="eyebrow">{b.wordsTitle}</h2>
+        <dl class="mt-5 space-y-5">
+          {
+            b.words.map((w) => (
+              <div>
+                <dt class="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-dim">{w.level}</dt>
+                <dd class="mt-1 font-heading text-lg font-semibold text-paper">{w.text}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="rounded-2xl border border-caution/25 bg-caution/[0.04] p-6 sm:p-7" data-reveal data-reveal-delay="0.06">
+        <h2 class="flex items-center gap-2 text-xl font-bold"><Icon name="warn" class="size-5 text-caution" /> {b.dontTitle}</h2>
+        <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
+          {b.donts.map((n) => <li class="flex gap-2"><span aria-hidden="true" class="text-caution">✕</span>{n}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-28" aria-labelledby="voice-title">
+    <div class="container-page">
+      <h2 id="voice-title" class="eyebrow">{b.voiceTitle}</h2>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          b.voice.map((v) => (
+            <li class="card p-5" data-reveal>
+              <p class="font-heading text-lg font-semibold text-paper">{v.name}</p>
+              <p class="mt-1 text-sm text-muted">{v.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 text-sm text-dim">
+        {b.sourceNote} <a class="link" href={usai.brand} rel="noopener">docs/brand ↗</a>
+      </p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,35 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import Rich from '../Rich.astro';
+import Icon from '../Icon.astro';
+import { t, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const f = t(lang).home.features;
+const icons = ['globe', 'box', 'clock', 'database', 'queue', 'plug', 'loop', 'layers', 'doc', 'flask', 'gauge', 'key'] as const;
+---
+
+<section id="features" class="section relative" aria-labelledby="features-title">
+  <div class="container-page">
+    <SectionHeading {lang} id="features-title" eyebrow={f.eyebrow} title={f.title} lead={f.lead} />
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {
+        f.items.map((item, i) => (
+          <li class="feature card p-5 transition-colors hover:border-mint/30" data-reveal data-reveal-delay={String((i % 4) * 0.05)}>
+            <span class="flex size-9 items-center justify-center rounded-lg bg-mint/10 text-mint">
+              <Icon name={icons[i % icons.length]} class="size-[1.15rem]" />
+            </span>
+            <h3 class="mt-4 font-heading text-base font-semibold">{item.title}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <Rich text={item.body} {lang} />
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

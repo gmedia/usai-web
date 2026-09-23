@@ -1,0 +1,771 @@
+/**
+ * English copy — the source language. `id.ts` must have the same shape
+ * (TypeScript enforces it through `Dict`).
+ *
+ * Rules (AGENTS.md → Copy & claims):
+ * - The descriptor is "a workload-native application runtime". Never "AI runtime".
+ * - Never "production-ready", "faster than Node/Bun/Deno/PHP/Rust", "sandbox",
+ *   "secure isolation", "tenant isolation".
+ * - Every number comes from src/data/benchmarks.ts or a cited upstream doc.
+ * - Hard words get a glossary term: [[key]] or [[key|label]].
+ */
+export const en = {
+  meta: {
+    siteName: 'Usai',
+    tagline: 'A workload-native application runtime',
+    manifesto: 'A program should live only as long as its work requires.',
+    defaultDescription:
+      'Usai is an open-source, workload-native application runtime for TypeScript backends. The runtime stays alive; every request, task and message runs in a fresh execution world that ends when its work is done.',
+  },
+
+  nav: {
+    skip: 'Skip to content',
+    how: 'How it works',
+    evidence: 'Benchmarks',
+    research: 'Research',
+    glossary: 'Glossary',
+    docs: 'Docs',
+    github: 'GitHub',
+    menu: 'Menu',
+    close: 'Close menu',
+    language: 'Language',
+    home: 'Usai home',
+  },
+
+  common: {
+    getStarted: 'Get started',
+    starGithub: 'View on GitHub',
+    readGuide: 'Read the guide',
+    copy: 'Copy',
+    copied: 'Copied',
+    source: 'Source',
+    sources: 'Sources',
+    learnMore: 'Learn more',
+    seeAll: 'See all',
+    glossaryHint: 'Tap an underlined term for a plain-language explanation.',
+    openGlossary: 'Open in glossary',
+    termLabel: 'Term',
+    inPlainWords: 'In plain words',
+    likeThis: 'Think of it like',
+    technically: 'Technically',
+    status: 'Alpha',
+    version: 'Version',
+    license: 'License',
+    measured: 'Measured',
+    notMeasured: 'Not measured here',
+    illustrative: 'Illustrative — the real probe is in the sweep report.',
+    backToTop: 'Back to top',
+  },
+
+  footer: {
+    blurb:
+      'Usai is an independent open-source project in the Sakala ecosystem, maintained by the Sakala maintainers. The repository is hosted in the gmedia organization, which supports the project without steering it.',
+    product: 'Project',
+    resources: 'Resources',
+    community: 'Community',
+    guide: 'Developer guide',
+    sdk: 'SDK reference',
+    status: 'Status',
+    roadmap: 'Roadmap',
+    supported: 'Supported platforms',
+    releases: 'Releases',
+    issues: 'Issues',
+    security: 'Security policy',
+    governance: 'Governance',
+    brand: 'Brand assets',
+    siteSource: 'Source of this website',
+    license: 'Usai and this website are licensed under Apache-2.0.',
+    ecosystem: 'Part of the Sakala ecosystem',
+  },
+
+  home: {
+    meta: {
+      title: 'Usai — a workload-native application runtime',
+      description:
+        'Open-source runtime for TypeScript backends: a persistent Rust host, an immutable application definition, and a fresh execution world for every request, task and message.',
+    },
+
+    hero: {
+      badge: 'Open source · Alpha',
+      title: 'A program should live only as long as its work requires.',
+      lead: 'Usai is a [[workload-native|workload-native]] application [[runtime|runtime]] for TypeScript backends. The runtime stays alive. Every request, task and message gets a fresh [[world|execution world]] — and that world ends when the work is done.',
+      primary: 'Get started',
+      secondary: 'How it works',
+      installLabel: 'Create an app',
+      meaning: '“usai” is Indonesian for finished, over, done.',
+      scrollHint: 'Scroll',
+    },
+
+    problem: {
+      eyebrow: 'The bug you never wrote',
+      title: 'Most servers remember things they should forget.',
+      lead: 'In a typical Node.js server, a variable at the top of a file lives as long as the process. Every request shares it. That is how data from one user ends up in another user’s response — without anyone writing a line that says so.',
+      codeCaption: 'The same handler, deployed three ways',
+      explain:
+        'Usai answers `1` every time because each request runs in its own fresh world. Nothing leaks from the previous request, because the previous request’s world no longer exists.',
+      note: 'This is the real correctness probe from the benchmark suite: ten requests, one module-level counter.',
+      demo: {
+        send: 'Send request',
+        sendTen: 'Send 10',
+        reset: 'Reset',
+        lanes: {
+          node: { name: 'Node — one process', hint: 'One memory for everyone. The counter keeps climbing.' },
+          cluster: { name: 'Node — cluster of 8', hint: 'Eight memories. The answer depends on which worker you hit.' },
+          usai: { name: 'Usai', hint: 'A fresh world per request. Always 1.' },
+        },
+        responses: 'Responses',
+        worker: 'worker',
+        worldBorn: 'world created',
+        worldEnded: 'world ended',
+        idle: 'Press “Send request” to see what each server answers.',
+      },
+    },
+
+    layers: {
+      eyebrow: 'The model',
+      title: 'Keep what is expensive. Throw away what is dangerous.',
+      lead: 'Usai splits a backend into three layers with three different lifetimes. The expensive parts stay warm. The parts that cause bugs are thrown away after every unit of work.',
+      items: [
+        {
+          name: 'Persistent runtime',
+          life: 'Lives for the whole process',
+          body: 'Network listeners, the scheduler, connection pools, metrics. Expensive to build, safe to keep — so Usai keeps them.',
+          examples: ['HTTP listener', 'scheduler', 'PostgreSQL pool', 'metrics'],
+        },
+        {
+          name: 'Immutable application definition',
+          life: 'Built once per deploy',
+          body: 'Your compiled code, routes, schemas and config — prepared once and reused by thousands of executions. It is read-only, so sharing it is safe.',
+          examples: ['bundled code', 'routes', 'schemas', 'config'],
+        },
+        {
+          name: 'Ephemeral execution world',
+          life: 'Lives for one unit of work',
+          body: 'Everything mutable: request data, the signed-in user, globals, temporary objects. Created when work starts, gone when it ends.',
+          examples: ['request state', 'auth context', 'globals', 'resource leases'],
+        },
+      ],
+      principle: 'Persistent runtime does not imply persistent application state.',
+    },
+
+    pipeline: {
+      eyebrow: 'How a request flows',
+      title: 'A world is created only when there is real work to do.',
+      lead: 'Scroll through one HTTP request. Notice where the world appears — and where it doesn’t.',
+      worldLabel: 'execution world',
+      noWorld: 'no world yet',
+      steps: [
+        { label: 'Request arrives', body: 'The persistent listener accepts the connection. Nothing about your app is running yet.', world: 'none' },
+        { label: 'Route match', body: 'The runtime looks the path up in the immutable definition. Unknown path? A 404, and no world was ever created.', world: 'none' },
+        { label: '[[boundary-validation|Boundary validation]]', body: 'Params, query and body are checked against your declared [[contract|contract]]. Invalid input is rejected here — before any of your code runs.', world: 'none' },
+        { label: 'Auth & [[admission|admission]]', body: 'Credentials are checked and the runtime decides whether it has capacity. If not: an immediate 503, never a hidden queue.', world: 'none' },
+        { label: 'World created', body: 'Only now does a fresh world exist: clean globals, a typed `ctx`, and the resources this route declared.', world: 'born' },
+        { label: 'Your handler runs', body: 'Business logic, database queries through a [[lease|lease]], tasks you [[invoke]] or [[dispatch]].', world: 'alive' },
+        { label: 'Response & contract check', body: 'The response is validated against its declared shape, then sent.', world: 'alive' },
+        { label: 'Ownership settles, world ends', body: 'Leases go back to the pool, owned work is accounted for, and the world is discarded. The runtime keeps serving.', world: 'ends' },
+      ],
+      closing: 'When the work is complete, the world ends. The runtime does not.',
+    },
+
+    lifetimes: {
+      eyebrow: 'Workload-native',
+      title: 'Every kind of work has a natural lifetime.',
+      lead: 'A request is only one kind of work. Usai lets you declare each kind with the lifetime it actually has — instead of forcing all of them into one long-running process.',
+      columns: { kind: 'Work', api: 'Declared with', lifetime: 'The world lives for' },
+      families: [
+        { name: 'Finite', body: 'Starts, does its job, ends.' },
+        { name: 'Connection-bound', body: 'Lives as long as a client stays connected.' },
+        { name: 'Persistent', body: 'Stays alive on purpose, until the app is redeployed.' },
+      ],
+      kinds: [
+        { kind: 'HTTP request', api: 'http.get / post / …', lifetime: 'one request', family: 0, span: 0.18 },
+        { kind: 'Task', api: 'task', lifetime: 'one invocation', family: 0, span: 0.3 },
+        { kind: 'Cron', api: 'cron', lifetime: 'one tick', family: 0, span: 0.24 },
+        { kind: 'Command', api: 'command', lifetime: 'one run', family: 0, span: 0.36 },
+        { kind: 'Queue message', api: 'queue.consume', lifetime: 'one message', family: 0, span: 0.2 },
+        { kind: 'Stream', api: 'http.stream', lifetime: 'until the handler returns', family: 1, span: 0.55 },
+        { kind: 'WebSocket', api: 'socket', lifetime: 'the connection', family: 1, span: 0.7 },
+        { kind: 'Service', api: 'service', lifetime: 'while the revision is active', family: 2, span: 1 },
+      ],
+      notEverything: {
+        title: 'Ephemeral by default — persistent by intent.',
+        body: 'Usai is not about killing everything. Some things deserve to live long: a database connection pool, a WebSocket, a background service. You declare them, and the runtime gives them the lifetime they need.',
+      },
+    },
+
+    ownership: {
+      eyebrow: 'Ownership, not cleanup',
+      title: 'Async work always has an owner.',
+      lead: 'The classic Node bug: fire off a `setTimeout` or an un-awaited promise, return the response, and hope it finishes. In Usai, work that outlives its world without an owner is a [[detached-work|lifecycle error]] — and the runtime tells you what to use instead.',
+      antiTitle: 'What you wrote',
+      antiCaption: 'What the runtime says',
+      fixTitle: 'Say what you mean',
+      invoke: '**invoke** — the request owns the task and waits for it.',
+      dispatch: '**dispatch** — ownership moves to a task with its own world. The request can finish.',
+      dispatchNote: 'Dispatch gives independent lifetime, not durability. For work that must survive a crash, use the queue.',
+      dbTitle: 'Death is not cleanup',
+      dbLead: 'Ending a world does not prove a database query has stopped. Usai only reuses a connection when it knows how the last operation ended.',
+      outcomes: [
+        { title: 'Finished normally', body: 'Or failed with a known SQL error. The connection goes back to the pool.', tone: 'ok' },
+        { title: 'Cancelled or timed out', body: 'Usai sends a cancel request and waits for PostgreSQL to confirm. Then it goes back.', tone: 'ok' },
+        { title: 'Outcome unknown', body: 'The connection is [[quarantine|quarantined]] and replaced. Never reused.', tone: 'warn' },
+      ],
+    },
+
+    code: {
+      eyebrow: 'Developer surface',
+      title: 'Declare work. Declare resources. Write business logic.',
+      lead: 'Plain TypeScript with any Standard Schema library (Zod, Valibot, ArkType). One definition drives routing, validation, OpenAPI, the generated reference at `/_usai/docs`, and your tests — so they cannot drift apart.',
+      tabs: [
+        { id: 'hello', label: 'HTTP', caption: 'examples/hello/src/app.ts — invalid params are rejected before a world exists.' },
+        { id: 'tasks', label: 'Tasks', caption: 'Owned work vs transferred work — explicit in the code.' },
+        { id: 'cron', label: 'Cron', caption: '`exclusive: true` runs each tick on exactly one replica, without leader election.' },
+        { id: 'queue', label: 'Queue', caption: 'A PostgreSQL-backed queue with explicit retry and dead letters.' },
+        { id: 'socket', label: 'WebSocket', caption: 'Connection-bound: `ctx.state` lives exactly as long as the connection.' },
+        { id: 'service', label: 'Service', caption: 'Persistent on purpose, with a restart policy.' },
+        { id: 'test', label: 'Tests', caption: '`usai/test` drives the real runtime binary — not a mock.' },
+      ],
+    },
+
+    evidence: {
+      eyebrow: 'Evidence, not adjectives',
+      title: 'Measured, published, and honest about the cost.',
+      lead: 'Every number below links to the report it came from. Usai is not the fastest runtime, and we will not pretend it is. What it offers is a guarantee — and here is what that guarantee costs.',
+      stats: [
+        { value: '73.6 M', label: 'requests in a 72-hour soak', note: '0 × 5xx, memory flat (51.5 → 53.5 MiB)', source: 'reliability' },
+        { value: '≈30 MiB', label: 'per idle app, 0.00 % CPU', note: 'at 50 apps per host; Node + Fastify ≈36 MiB, 0.12 %', source: 'efficiency' },
+        { value: '1 000', label: 'live revision replacements', note: '2.04 M requests under load, 0 errors', source: 'reliability' },
+        { value: '0 × 502', label: 'during a rolling restart', note: 'two replicas behind one proxy, under load', source: 'reliability' },
+        { value: '78 M', label: 'fuzzing executions', note: '3 targets, 0 crashes, 0 hangs', source: 'fuzzing' },
+        { value: '35 / 35', label: 'threat-model probes passed', note: 'verified, not asserted', source: 'threat' },
+      ],
+      chartTitle: 'Throughput, six workload classes',
+      chartLead: 'Requests per second, same contracts, same box. Pick a class and a [[concurrency|concurrency]] level.',
+      tradeoffTitle: 'The trade-off, in one line',
+      tradeoff:
+        'A request that does nothing costs Usai **6–14× Node’s CPU**. A request that touches PostgreSQL — what real apps are made of — runs level with a single Node process, ahead of tuned PHP-FPM, and **1.8–7× ahead of Laravel**. Choose Usai for the guarantee, not for hello-world throughput.',
+      more: 'Full benchmark report',
+    },
+
+    features: {
+      eyebrow: 'What ships today',
+      title: 'Everything a backend needs, each with the right lifetime.',
+      lead: 'Each item below has acceptance tests in the runtime repository.',
+      items: [
+        { title: 'Contract-aware HTTP', body: 'Standard Schema validation on the way in, response contracts on the way out.' },
+        { title: 'Tasks with ownership', body: '`invoke` to own, `dispatch` to hand off. No accidental detached work.' },
+        { title: 'Cron & commands', body: 'Scheduled ticks, overlap policy, `exclusive` ticks across replicas.' },
+        { title: 'PostgreSQL', body: 'Pooled connections reused only with proof of how the last query ended.' },
+        { title: 'Queue', body: 'PostgreSQL-backed, `SKIP LOCKED`, explicit retry and dead letters.' },
+        { title: 'Streams & WebSockets', body: 'Connection-bound worlds with their own state.' },
+        { title: 'Services', body: 'Intentionally long-running work with a restart policy.' },
+        { title: 'Migrations & seeders', body: '`usai db migrate | status | seed`.' },
+        { title: 'OpenAPI & live reference', body: 'OpenAPI 3.1 and `/_usai/docs`, generated from the definition the runtime executes.' },
+        { title: 'Real-runtime tests', body: '`usai/test` drives HTTP, tasks, cron and queue through the real binary.' },
+        { title: 'Operations', body: 'Liveness, readiness, status and Prometheus metrics; zero-downtime revisions.' },
+        { title: 'Supply chain', body: 'Ed25519-signed artifacts, checksummed binaries, build provenance, fuzzing in CI.' },
+      ],
+    },
+
+    researchTeaser: {
+      eyebrow: 'Where it came from',
+      title: 'It started with one question.',
+      question: 'Why must something that has finished still stay alive?',
+      body: 'Before a line of this runtime was written, a research programme tried hard to prove the idea wrong — and published its negatives next to its positives. The runtime inherits its contracts, not its code.',
+      cta: 'Read the research story',
+    },
+
+    principles: {
+      eyebrow: 'Principles',
+      items: [
+        'Ephemeral by default; persistent by intent.',
+        'Nothing should share a lifetime merely because it shares a process.',
+        'Death is not cleanup. Ownership is cleanup.',
+        'Persistent runtime does not imply persistent application state.',
+      ],
+    },
+
+    quickstart: {
+      eyebrow: 'Quickstart',
+      title: 'From zero to a running app in one minute.',
+      lead: 'The dev server fetches the Usai binary once. Or skip the toolchain entirely with Docker.',
+      steps: [
+        { title: 'Create an app', cmd: 'pnpm dlx @sakaladev/create-usai my-app' },
+        { title: 'Install and run', cmd: 'cd my-app && pnpm install && pnpm dev' },
+        { title: 'Say hello', cmd: 'curl http://127.0.0.1:3000/hello/world' },
+      ],
+      dockerTitle: 'Nothing installed?',
+      dockerCmd: 'docker compose up',
+      dockerNote: 'The scaffold ships a compose file using the sakaladev/usai dev image.',
+      platformsTitle: 'Runs on',
+      platforms: [
+        { name: 'Linux x86_64 & aarch64', note: 'glibc ≥ 2.36 — supported' },
+        { name: 'macOS arm64 14+', note: 'development only' },
+        { name: 'Windows', note: 'via WSL2 or Docker' },
+        { name: 'PostgreSQL 15–18', note: 'Node 24 · TypeScript 5.9+' },
+      ],
+      statusTitle: 'Alpha, and honest about it',
+      statusBody:
+        'Usai 0.0.x has passed long soaks, failure campaigns and rolling restarts. Still open: developers outside the project building from the docs alone, and frozen contracts. Use it for development, evaluation and internal tools you can restart.',
+      statusCta: 'Where each gate stands',
+    },
+
+    final: {
+      title: 'Build what lives for what matters.',
+      body: 'Usai is open source under Apache-2.0. Try it, break it, and tell us what you found.',
+    },
+  },
+
+  benchmarks: {
+    meta: {
+      title: 'Benchmarks — what Usai costs and what it buys',
+      description:
+        'Usai measured against Node, Node cluster, Bun, Deno, Rust axum, PHP-FPM and Laravel across six workload classes — with CPU, memory, correctness and every loss shown.',
+    },
+    eyebrow: 'Benchmarks',
+    title: 'What it costs. What it buys.',
+    lead: 'Six workload classes, seven comparators, one machine. Wins and losses are shown the same way — and every number links to its source.',
+    setupTitle: 'Setup',
+    setup: [
+      'Intel Xeon E5-2680 v4 (16 threads); server pinned to 8 CPUs, load client to 4, PostgreSQL 18 to 2.',
+      'Every comparator serves the same six classes with the same contracts and passes a conformance check first.',
+      'Concurrency 1 → 64, 20 seconds per cell, release builds. Measured 2026-09-23.',
+    ],
+    classesTitle: 'The six workload classes',
+    classes: {
+      A: { name: 'Hello', body: 'The runtime tax — no database at all.' },
+      B: { name: 'Validation', body: 'A nested request body and an output contract.' },
+      C: { name: 'DB read', body: 'One indexed PostgreSQL read.' },
+      D: { name: 'Insert', body: 'One PostgreSQL insert.' },
+      E: { name: 'Transaction', body: 'Read, update and insert in one transaction.' },
+      F: { name: 'Auth + read', body: 'An API key looked up in PostgreSQL, then a read.' },
+    },
+    chart: {
+      classLabel: 'Workload class',
+      concLabel: 'Concurrent requests',
+      unit: 'req/s',
+      tableToggle: 'Show as table',
+      runtime: 'Runtime',
+      ahead: 'Usai ahead of one Node process',
+      behind: 'Usai behind one Node process',
+      laravelOnly: 'Laravel was measured at c = 64 only.',
+      insight: {
+        A: 'The runtime tax is most visible here: every request pays for a fresh world, and there is no database to hide it.',
+        B: 'Pure CPU work with no database to wait for. Bun, Deno, Rust, tuned PHP-FPM and Node × 8 are all ahead; one Node process is level. This is Usai’s weakest class.',
+        C: 'Once PostgreSQL does the work, the runtimes converge. Usai is ahead of one Node process and tuned PHP-FPM.',
+        D: 'The disk is the bill: all six runtimes land within 20 % of each other at every concurrency.',
+        E: 'At c = 64 Usai is 62 % ahead of one Node process and 18 % behind an eight-worker cluster.',
+        F: 'Ahead of one Node process from c = 16, ahead of tuned PHP-FPM by 80 % at c = 64.',
+      },
+    },
+    shortTitle: 'The short version',
+    short: [
+      { vs: 'One Node process', verdict: 'At c = 64, ahead on five of six classes; behind on the insert (−15 %), where the disk is the bill. At c = 1, behind on every class.' },
+      { vs: 'Node × 8 (cluster)', verdict: '7× behind on a trivial route, 2× behind where PostgreSQL does the work — and eight processes answer the same request differently.' },
+      { vs: 'Tuned PHP-FPM', verdict: 'Ahead wherever there is a database (+19 % read, +54 % transaction, +80 % auth + read at c = 64); behind on pure validation (−32 %).' },
+      { vs: 'Laravel 12', verdict: 'Ahead on every class by 1.8× to 7×, at a third to a seventh of the CPU per request.' },
+      { vs: 'Rust axum', verdict: '2.5–11× behind — the price of running JavaScript at all.' },
+    ],
+    costTitle: 'What it costs',
+    costLead: 'CPU per request at c = 16 and memory at c = 64. This is the part a scoreboard usually hides.',
+    cpuLabel: 'CPU ms per request (c = 16)',
+    rssLabel: 'Memory, RSS MiB (c = 64)',
+    costNote:
+      'Usai’s memory grows with **concurrency**, not with request count: a touched world slot keeps its pages, so 64 concurrent requests cost ≈0.5 GiB. The comparator that matches its throughput, Node × 8, costs 877 MiB to 1 GiB.',
+    probeTitle: 'What it buys',
+    probeLead: 'The suite asks each server for a module-level counter ten times. This is the part that never appears in a scoreboard.',
+    probeServer: 'Server',
+    probeAnswers: 'Ten answers',
+    probeNote:
+      'One process remembers; eight processes remember unevenly — the same request gets a different answer depending on which worker answered. Usai and PHP-FPM give the same answer every time, for the same reason: a fresh world per unit of work.',
+    laravelTitle: 'Against Laravel',
+    laravelLead: 'Laravel 12 on the same tuned PHP stack, config and route caches warm — the comparison people usually mean when they say “PHP”. Usai ÷ Laravel at c = 64:',
+    efficiencyTitle: 'Idle cost and density',
+    efficiencyLead: 'What an application costs when it is doing mostly nothing — measured with 50 applications on one host.',
+    efficiency: [
+      { value: '≈30 MiB', label: 'per idle app (PSS)', note: 'Node + Fastify: ≈36 MiB' },
+      { value: '0.00 %', label: 'idle CPU', note: 'Node + Fastify: 0.12 %' },
+      { value: '11–16 ms', label: 'cold first response', note: 'Node + Fastify: 45–62 ms' },
+      { value: '≈1.7×', label: 'Node’s CPU per request under burst', note: 'the cost side of the same run' },
+    ],
+    floorsTitle: 'Smallest box',
+    floors: [
+      { value: '48 MiB · 0.25 vCPU', label: 'technical floor', note: 'hello only, c ≤ 4 — a number to quote, not to deploy on' },
+      { value: '192 MiB · 1 vCPU', label: 'supported floor', note: 'with PostgreSQL, a task, cron, metrics and JSON logs' },
+    ],
+    reliabilityTitle: 'Reliability',
+    reliability: [
+      { value: '72 h', label: 'soak: 73.6 M requests, 0 × 5xx, flat memory' },
+      { value: '24 h', label: 'soak: 35.0 M requests, 0 errors' },
+      { value: '1 000', label: 'revision replacements under load, 0 errors' },
+      { value: '0 × 502', label: 'rolling restart with two replicas' },
+    ],
+    notMeasuredTitle: 'What this does not measure',
+    notMeasured: [
+      'Latency under saturation — concurrency stops at 64 and every cell is 20 seconds.',
+      'Multi-instance Usai — one process per application is the supported topology.',
+      'Comparator memory floors — attempted, not usable, and therefore not claimed.',
+      'Anything on hardware other than the single machine described above.',
+    ],
+    methodTitle: 'Reproduce it',
+    method: 'The harness, the comparator apps and the methodology live in the runtime repository. “No single benchmark is the benchmark.”',
+    methodCta: 'Read the methodology',
+  },
+
+  research: {
+    meta: {
+      title: 'Research — from one question to a runtime',
+      description:
+        'How the Usai model was tested before the runtime was built: disposable worlds, cancellation, PostgreSQL capabilities, real HTTP, 64 concurrent worlds — negatives included.',
+    },
+    eyebrow: 'Research',
+    title: 'From one question to a runtime.',
+    question: 'Why must something that has finished still stay alive?',
+    lead: 'Usai did not start as a product. It started as an attempt to prove an idea wrong. The research programme ran experiments whose pass/fail rules were written down before the results existed — and kept the failures on the record.',
+    arcTitle: 'The arc',
+    arc: [
+      { phase: 'A', title: 'Can a world be fresh?', body: 'Yes — clean state, stable memory. But building a fresh JavaScript world naively for every request was far too expensive. Ephemeral was not free.', verdict: 'negative', tag: 'fresh, but too slow' },
+      { phase: 'B', title: 'Make fresh cheap', body: 'Engine snapshots attacked the wrong cost and were rejected. Preparing the application once and giving each world a private, copy-on-write view of it made new worlds nearly free.', verdict: 'positive', tag: 'the pivot' },
+      { phase: 'C', title: 'Can worlds borrow long-lived things?', body: 'Capabilities attach and detach cheaply, async work suspends without a thread per world, and a PostgreSQL connection can outlive the world that used it — if its terminal state is proven.', verdict: 'positive', tag: 'ownership model' },
+      { phase: 'D', title: 'Real HTTP + PostgreSQL', body: 'The first attempts failed their economics gate — and were published as failures. Attribution showed the cost was host work the semantics never asked for, not the model itself.', verdict: 'negative', tag: 'negatives on record' },
+      { phase: 'E', title: 'Concurrency', body: 'Five host-side fixes, no change to the model. 64 simultaneous worlds, the 65th refused at capacity, 1.26 M measured requests, 0 correctness failures.', verdict: 'positive', tag: 'checkpoint' },
+    ],
+    lessonTitle: 'The lesson the runtime inherits',
+    lesson: 'An expensive lifecycle can be an implementation problem rather than a semantic law.',
+    lessonBody: 'Ephemeral execution is not automatically expensive; paying for work the semantics never asked for is.',
+    chartTitle: 'Same model, less unnecessary work',
+    chartLead: 'Ratio to Node + Fastify on one HTTP + PostgreSQL workload (lower is better; 1.0 = parity). Before and after the five host fixes.',
+    chartBefore: 'Before',
+    chartAfter: 'After',
+    chartCpu: 'CPU ratio',
+    chartP50: 'Median latency ratio',
+    chartCaveat:
+      'Research numbers, single server core, not the shipped runtime. The full pass/fail envelope held through c = 16; at c = 32 and 64 only the ratio gates passed. The five fixes are credited as a bundle, not individually.',
+    chartFootnote: '{cells} cells · {requests} measured requests · {failures} correctness failures · {worlds} simultaneous worlds',
+    methodTitle: 'How we know',
+    method: [
+      { title: 'Write the rules first', body: 'Pass/fail gates were registered before any result existed.' },
+      { title: 'One attempt', body: 'A frozen build, one run. No retrying until it looks good.' },
+      { title: 'Seal the result', body: 'Results are never edited. Corrections are new documents.' },
+      { title: 'Keep the negatives', body: 'A failed thesis with good evidence beats a demo built on assumptions.' },
+    ],
+    notTitle: 'What the research does not establish',
+    not: [
+      'That Usai is production-ready.',
+      'That Usai is generally faster than Node, Bun, Deno, PHP or Rust.',
+      'Multi-core behaviour, tail latency, or density — those are engineering work in the runtime repository.',
+      'Any security boundary. A fresh world is a correctness property, not a sandbox.',
+    ],
+    openTitle: 'Still open',
+    open: [
+      'The multi-core model — one runtime with shared resources, or sharded engines?',
+      'One process serving many applications, to remove the per-app memory floor.',
+      'The JavaScript interpreter is 42 % of a trivial request — and both ways out cost something the model is built on.',
+    ],
+    sourceNote: 'The research repository is private to maintainers. Its conclusions are carried by the runtime’s lifecycle contracts, ADRs and the public research reference.',
+    sourceCta: 'Public research reference',
+    closing: 'When a thing has finished the work that justifies its lifetime: usai.',
+  },
+
+  glossary: {
+    meta: {
+      title: 'Glossary — Usai in plain words',
+      description: 'Every term used on this site, explained in plain language first and technically second.',
+    },
+    eyebrow: 'Glossary',
+    title: 'Usai in plain words.',
+    lead: 'Each term has a plain explanation, an everyday comparison, and the precise technical meaning.',
+    search: 'Filter terms…',
+    empty: 'No term matches that filter.',
+    groups: { model: 'The model', work: 'Work & ownership', measure: 'Measuring' },
+    terms: {
+      runtime: {
+        term: 'Runtime',
+        group: 'model',
+        short: 'The program that runs your program.',
+        analogy: 'A theatre: the building, lights and crew stay; the plays change.',
+        detail: 'In Usai, the persistent Rust host process: network listeners, scheduler, engine, observability and resource managers. It lives for the whole process.',
+      },
+      'workload-native': {
+        term: 'Workload-native',
+        group: 'model',
+        short: 'Built around kinds of work, each with its own natural lifetime.',
+        analogy: 'A restaurant where a table is cleared after each guest, but the kitchen stays hot all night.',
+        detail: 'Instead of one long-lived process for everything, each workload — HTTP request, task, cron tick, queue message, WebSocket, service — is declared with the lifetime it actually has.',
+      },
+      world: {
+        term: 'Execution world',
+        group: 'model',
+        short: 'A clean, private workspace created for one piece of work, then thrown away.',
+        analogy: 'A fresh sheet of paper for every calculation, instead of one whiteboard nobody erases.',
+        detail: 'The disposable execution context for one unit of work: mutable globals, request/message state, auth context, temporary objects and resource leases. Created after admission; ends at the workload’s terminal state. Its isolation is semantic (a correctness property), not a security boundary.',
+      },
+      ephemeral: {
+        term: 'Ephemeral',
+        group: 'model',
+        short: 'Short-lived on purpose.',
+        analogy: 'A paper cup rather than a mug you forget to wash.',
+        detail: 'Usai’s default for application state: it exists for one unit of work and then disappears. The opposite — persistent — must be declared.',
+      },
+      'application-definition': {
+        term: 'Application definition',
+        group: 'model',
+        short: 'Your app, prepared once and frozen so it can be shared safely.',
+        analogy: 'The printing plate, not the printed page.',
+        detail: 'The immutable description of one app revision: bundled handlers, routes, schemas, resources, config requirements and pre-initialised engine state. Routing, OpenAPI, `/_usai/docs` and tests all read this same definition.',
+      },
+      revision: {
+        term: 'Revision',
+        group: 'model',
+        short: 'One deployed version of your app.',
+        analogy: 'A new edition of a book on the shelf while the old one is still being read.',
+        detail: 'A built application definition as deployed. States: installed → active → draining → retired. A failed activation never displaces the active revision.',
+      },
+      lifetime: {
+        term: 'Lifetime',
+        group: 'model',
+        short: 'How long something should exist.',
+        analogy: 'Milk and salt both live in your kitchen — for very different times.',
+        detail: 'Usai keeps five lifetimes distinct: the runtime, the application definition, the execution world, a resource lease, and an external operation. Nothing should share a lifetime merely because it shares a process.',
+      },
+      'module-state': {
+        term: 'Module-level state',
+        group: 'model',
+        short: 'A variable declared at the top of a file, outside any function.',
+        analogy: 'A note stuck on a shared fridge: everyone who opens it sees it.',
+        detail: 'In a long-running Node process it is shared by every request for the life of the process — the classic source of cross-request data leaks. In Usai it starts fresh in every world.',
+      },
+      workload: {
+        term: 'Workload',
+        group: 'work',
+        short: 'A kind of work your app does.',
+        analogy: 'Jobs on a to-do list: some take a minute, some last all day.',
+        detail: 'A declared kind of application work with a natural lifetime: HTTP request, task, cron invocation, queue message, command, WebSocket connection, stream or service. Families: finite, connection-bound, persistent.',
+      },
+      contract: {
+        term: 'Contract',
+        group: 'work',
+        short: 'A promise about what data goes in and comes out.',
+        analogy: 'A form with required fields — incomplete forms are handed back at the desk.',
+        detail: 'Schemas (any Standard Schema library: Zod 4, Valibot, ArkType) declared on a workload for params, query, body and response. Input is validated before a world exists; responses are checked before they are sent.',
+      },
+      'boundary-validation': {
+        term: 'Boundary validation',
+        group: 'work',
+        short: 'Checking input at the door, before your code runs.',
+        analogy: 'A bouncer checking tickets before anyone reaches the hall.',
+        detail: 'Transport and structural validation done by the runtime before a world is created. Business rules remain your code’s job.',
+      },
+      admission: {
+        term: 'Admission',
+        group: 'work',
+        short: 'The runtime deciding whether it can take on this work right now.',
+        analogy: 'A restaurant that says “full” at the door instead of seating you and never serving.',
+        detail: 'After routing, validation and auth, the runtime checks hierarchical budgets (runtime → application → workload → resource). Overload is an immediate 503, never a hidden queue.',
+      },
+      ownership: {
+        term: 'Ownership',
+        group: 'work',
+        short: 'Every piece of async work belongs to someone responsible for it.',
+        analogy: 'Every package in a warehouse has a label saying who signs for it.',
+        detail: 'Asynchronous work must either be owned by the current workload or explicitly transferred to another lifetime. “Death is not cleanup. Ownership is cleanup.”',
+      },
+      invoke: {
+        term: 'invoke',
+        group: 'work',
+        short: 'Run a task and wait for it — the current work stays responsible.',
+        analogy: 'Asking a colleague for help and waiting at their desk.',
+        detail: '`ctx.tasks.invoke(task, input)` keeps ownership in the current world and awaits the child.',
+      },
+      dispatch: {
+        term: 'dispatch',
+        group: 'work',
+        short: 'Hand a task off so it runs on its own; the current work can finish.',
+        analogy: 'Posting a letter: once it is in the postbox, you can go home.',
+        detail: '`ctx.tasks.dispatch(task, input)` transfers ownership to a task with its own world. It gives an independent lifetime, not durability — use the queue for work that must survive a crash.',
+      },
+      'detached-work': {
+        term: 'Detached work',
+        group: 'work',
+        short: 'Async work that nobody owns — Usai reports it as an error.',
+        analogy: 'Leaving the stove on when you leave the house.',
+        detail: 'A stray `setTimeout`, interval or un-awaited promise still running when its world ends. Forbidden by the lifecycle contracts; the runtime explains which primitive to use instead (task, cron or service).',
+      },
+      resource: {
+        term: 'Resource',
+        group: 'work',
+        short: 'Something that should outlive a single piece of work — like a database pool.',
+        analogy: 'The office printer: shared, long-lived, borrowed briefly.',
+        detail: 'State or capability with an intentionally longer lifetime than a world (PostgreSQL pool, HTTP client, queue infrastructure), declared explicitly and owned by a runtime resource manager.',
+      },
+      lease: {
+        term: 'Lease',
+        group: 'work',
+        short: 'Borrowing a shared resource for the duration of one piece of work.',
+        analogy: 'Borrowing a library book — it must come back, and in a known state.',
+        detail: 'Temporary ownership of a persistent resource by one world (e.g. one pooled connection). Its lifetime is separate from both the world and the external operation.',
+      },
+      'terminal-proof': {
+        term: 'Terminal proof',
+        group: 'work',
+        short: 'Knowing for certain that an operation has finished.',
+        analogy: 'Hearing the dishwasher finish before you open it.',
+        detail: 'Knowledge that an external operation definitively ended: success, a known SQLSTATE, or a confirmed cancellation. Only terminal proof makes a connection reusable.',
+      },
+      quarantine: {
+        term: 'Quarantine',
+        group: 'work',
+        short: 'Retiring a connection whose state is uncertain instead of risking reuse.',
+        analogy: 'Throwing away a jar whose seal might be broken.',
+        detail: 'The fail-closed decision for a resource whose operation ended ambiguously: remove it from the pool, replace it, never reuse it.',
+      },
+      drain: {
+        term: 'Draining',
+        group: 'work',
+        short: 'Finishing work in progress without accepting new work.',
+        analogy: 'A shop that locks the door at closing time but serves the customers already inside.',
+        detail: 'A draining revision gets no new work while its in-flight worlds settle. Used for zero-downtime deploys and rolling restarts.',
+      },
+      concurrency: {
+        term: 'Concurrency (c)',
+        group: 'measure',
+        short: 'How many requests are in flight at the same moment.',
+        analogy: 'How many customers are at the counter at once.',
+        detail: 'In the benchmarks, c = 1 sends one request at a time; c = 64 keeps 64 in flight. Some runtimes win at low concurrency and lose at high, or the reverse.',
+      },
+      rps: {
+        term: 'Requests per second',
+        group: 'measure',
+        short: 'Throughput: how many requests a server completes each second.',
+        analogy: 'Cars through a toll gate per second.',
+        detail: 'Higher is better, but it says nothing about correctness, CPU or memory — which is why the site shows those next to it.',
+      },
+      'cpu-per-request': {
+        term: 'CPU per request',
+        group: 'measure',
+        short: 'How much processor time one request costs.',
+        analogy: 'Fuel used per trip.',
+        detail: 'Measured as user + system CPU time of the server’s process tree divided by requests. Usai’s is higher than Node’s because each request pays for a fresh world.',
+      },
+      latency: {
+        term: 'p50 / p99 latency',
+        group: 'measure',
+        short: 'How long requests take: the typical one (p50) and the slow ones (p99).',
+        analogy: 'Your usual commute, and your worst commute of the month.',
+        detail: 'p50 is the median response time; p99 means 99 % of requests were faster than this value.',
+      },
+      memory: {
+        term: 'RSS / PSS',
+        group: 'measure',
+        short: 'Two ways of counting how much memory a process uses.',
+        analogy: 'RSS counts a shared apartment fully for each tenant; PSS splits the rent.',
+        detail: 'RSS counts shared pages once per process; PSS divides them among sharers. Because Usai worlds share one image, PSS is the honest number for density.',
+      },
+      soak: {
+        term: 'Soak test',
+        group: 'measure',
+        short: 'Running under steady load for a long time to catch slow leaks.',
+        analogy: 'Leaving a boat in the water for days to find slow leaks.',
+        detail: 'Usai’s longest: 72 hours, 73.6 M requests, 0 × 5xx, memory flat from 51.5 to 53.5 MiB.',
+      },
+      fuzzing: {
+        term: 'Fuzzing',
+        group: 'measure',
+        short: 'Throwing millions of random, broken inputs at code to find crashes.',
+        analogy: 'A toddler testing every button on a remote.',
+        detail: 'Three libFuzzer targets (manifest, HTTP boundary, source maps): 78 M executions, 0 crashes. CI runs them on every change and nightly.',
+      },
+      'node-cluster': {
+        term: 'Node cluster (× 8)',
+        group: 'measure',
+        short: 'Eight separate Node processes behind one port.',
+        analogy: 'Eight cashiers, each with their own notebook.',
+        detail: '`node:cluster` with eight workers — what a team running Node on an 8-core box would deploy. Fast, but each worker has its own module state, so answers can differ by worker.',
+      },
+      'php-fpm': {
+        term: 'PHP-FPM',
+        group: 'measure',
+        short: 'The standard way PHP runs on servers: a pool of worker processes.',
+        analogy: 'A fixed team of clerks; when all are busy, you wait.',
+        detail: 'Like Usai, PHP resets application state per request. Its ceiling is roughly workers ÷ latency, which is why it trails Usai on database-heavy classes.',
+      },
+      alpha: {
+        term: 'Alpha (0.0.x)',
+        group: 'measure',
+        short: 'Working and tested, but contracts may still change.',
+        analogy: 'A car that passed the test track, before it goes on sale.',
+        detail: 'Usai’s current status: production qualification in progress. Open gates: external developers building from the docs alone, and frozen contracts.',
+      },
+    },
+  },
+
+  brand: {
+    meta: {
+      title: 'Brand — Usai logo, colours and usage',
+      description: 'Download the Usai logo, icon and colours, and learn how to use them.',
+    },
+    eyebrow: 'Brand',
+    title: 'The mark, the colours, the words.',
+    lead: 'A U whose left stroke carries through, whose right stroke ends early, and a dot that sits apart from both — a program that lives only as long as its work requires.',
+    download: 'Download',
+    logosTitle: 'Logos',
+    logos: [
+      { file: 'usai-logo.svg', name: 'Primary', note: 'On white or light backgrounds', dark: false },
+      { file: 'usai-logo-white.svg', name: 'White', note: 'On dark backgrounds', dark: true },
+      { file: 'usai-logo-on-dark.svg', name: 'On Deep Teal', note: 'Banners, slides, social cards', dark: true },
+      { file: 'usai-logo-no-tagline.svg', name: 'No tagline', note: 'Headers and small sizes', dark: false },
+      { file: 'usai-logo-mono-dark.svg', name: 'Mono', note: 'Single-colour print', dark: false },
+      { file: 'usai-app-icon.svg', name: 'App icon', note: 'Favicons, avatars', dark: true },
+    ],
+    colorsTitle: 'Colours',
+    colors: [
+      { name: 'Primary Teal', hex: '#0E7A72', role: 'Buttons, links, the core of the brand' },
+      { name: 'Deep Teal', hex: '#083D3A', role: 'Depth, dark backgrounds, hero' },
+      { name: 'Mint', hex: '#2DD4BF', role: 'Accent on dark, the CLI highlight' },
+      { name: 'Charcoal', hex: '#1F2937', role: 'Text and neutral UI on light' },
+      { name: 'Soft Gray', hex: '#E5E7EB', role: 'Dividers, borders' },
+      { name: 'Off White', hex: '#FAFBFC', role: 'Light canvas' },
+    ],
+    wordsTitle: 'The words',
+    words: [
+      { level: 'Descriptor', text: 'A workload-native application runtime' },
+      { level: 'Manifesto', text: 'A program should live only as long as its work requires.' },
+      { level: 'Supporting', text: 'Ephemeral by default. Persistent by intent.' },
+    ],
+    dontTitle: 'Please don’t',
+    donts: [
+      'Call Usai an “AI runtime”. It is a workload-native application runtime.',
+      'Stretch, rotate, outline or recolour the logo, or add shadows and glows.',
+      'Retype “USAI” in a font — the wordmark is a drawing, not text.',
+      'Place the logo on busy backgrounds or without clear space (the height of the U).',
+    ],
+    voiceTitle: 'Voice',
+    voice: [
+      { name: 'Precise', body: 'Accuracy and clarity in what we say and build.' },
+      { name: 'Honest', body: 'Open about costs and limits. No hype.' },
+      { name: 'Calm', body: 'Measured, thoughtful, long-term.' },
+      { name: 'Technical', body: 'Depth that respects the reader.' },
+    ],
+    sourceNote: 'The source of truth for all assets is docs/brand in the runtime repository.',
+  },
+
+  notFound: {
+    title: 'This page has finished its work.',
+    body: 'It no longer exists — which, around here, is a feature. Let’s get you somewhere that does.',
+    home: 'Back to home',
+  },
+};
+
+type Widen<T> = T extends string
+  ? string
+  : T extends number
+    ? number
+    : T extends boolean
+      ? boolean
+      : T extends readonly (infer U)[]
+        ? Widen<U>[]
+        : T extends object
+          ? { [K in keyof T]: Widen<T[K]> }
+          : T;
+
+export type Dict = Widen<typeof en>;

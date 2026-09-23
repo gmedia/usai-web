@@ -1,0 +1,137 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Rich from '../components/Rich.astro';
+import { t, localePath, plain, type Lang } from '../i18n';
+import { site, usai } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const g = d.glossary;
+type Entry = { term: string; group: string; short: string; analogy: string; detail: string };
+const entries = Object.entries(g.terms as Record<string, Entry>);
+const groups = Object.entries(g.groups) as [string, string][];
+const pageUrl = new URL(localePath(lang, '/glossary/'), site.url).href;
+
+const graph = [
+  {
+    '@type': 'DefinedTermSet',
+    '@id': `${pageUrl}#terms`,
+    name: g.meta.title,
+    inLanguage: lang,
+    hasDefinedTerm: entries.map(([key, e]) => ({
+      '@type': 'DefinedTerm',
+      '@id': `${pageUrl}#${key}`,
+      name: e.term,
+      description: `${e.short} ${plain(e.detail)}`,
+      inDefinedTermSet: `${pageUrl}#terms`,
+    })),
+  },
+];
+---
+
+<Base {lang} path="/glossary/" page="glossary" title={g.meta.title} description={g.meta.description} breadcrumb={d.nav.glossary} {graph}>
+  <section class="relative overflow-hidden pb-10 pt-32 sm:pt-40">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_60%_0%,rgb(8_61_58/0.6),transparent)]" aria-hidden="true"></div>
+    <div class="container-page">
+      <SectionHeading {lang} as="h1" eyebrow={g.eyebrow} title={g.title} lead={g.lead} />
+      <div class="mt-8 max-w-md" data-reveal>
+        <label for="glossary-filter" class="sr-only">{g.search}</label>
+        <input
+          id="glossary-filter"
+          type="search"
+          placeholder={g.search}
+          autocomplete="off"
+          class="w-full rounded-xl border border-line bg-ink/80 px-4 py-3 text-sm text-paper placeholder:text-dim focus:border-mint/50 focus:outline-none"
+          data-glossary-filter
+        />
+        <p class="mt-2 text-xs text-dim" aria-live="polite" data-glossary-count></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-28">
+    <div class="container-page">
+      <nav aria-label={g.eyebrow} class="mb-10 flex flex-wrap gap-2">
+        {
+          groups.map(([key, label]) => (
+            <a href={`#group-${key}`} class="rounded-full border border-line px-3 py-1 text-sm text-muted transition-colors hover:border-mint/40 hover:text-paper">
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+
+      {
+        groups.map(([groupKey, groupLabel]) => (
+          <div class="mb-16" data-glossary-group>
+            <h2 id={`group-${groupKey}`} class="eyebrow mb-6">{groupLabel}</h2>
+            <div class="grid gap-4 md:grid-cols-2">
+              {entries
+                .filter(([, e]) => e.group === groupKey)
+                .map(([key, e]) => (
+                  <article id={key} class="term-card card scroll-mt-24 p-6" data-term={`${e.term} ${e.short} ${e.analogy} ${plain(e.detail)}`.toLowerCase()}>
+                    <h3 class="text-xl font-bold">
+                      <dfn class="not-italic">{e.term}</dfn>
+                      <a href={`#${key}`} class="ml-2 text-sm font-normal text-dim opacity-0 transition-opacity hover:text-mint focus:opacity-100 [.term-card:hover_&]:opacity-100" aria-label={`Link: ${e.term}`}>#</a>
+                    </h3>
+                    <p class="mt-3 text-base text-fog">{e.short}</p>
+                    <p class="mt-3 rounded-lg bg-mint/[0.05] px-3 py-2 text-sm text-muted">
+                      <span class="font-semibold text-mint-soft">{d.common.likeThis}:</span> {e.analogy}
+                    </p>
+                    <details class="group mt-3">
+                      <summary class="cursor-pointer list-none text-sm text-mint/90 hover:text-mint">
+                        <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">›</span> {d.common.technically}
+                      </summary>
+                      <p class="mt-2 text-sm leading-relaxed text-muted">
+                        <Rich text={e.detail} {lang} />
+                      </p>
+                    </details>
+                  </article>
+                ))}
+            </div>
+          </div>
+        ))
+      }
+      <p class="hidden text-muted" data-glossary-empty>{g.empty}</p>
+      <p class="mt-6 text-sm text-dim">
+        <a class="link" href={usai.glossary} rel="noopener">GLOSSARY.md ↗</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-glossary-filter]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-term]'));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-glossary-group]'));
+  const empty = document.querySelector<HTMLElement>('[data-glossary-empty]');
+  const count = document.querySelector<HTMLElement>('[data-glossary-count]');
+
+  const apply = () => {
+    const q = (input?.value ?? '').trim().toLowerCase();
+    let shown = 0;
+    cards.forEach((c) => {
+      const match = !q || (c.dataset.term ?? '').includes(q);
+      c.hidden = !match;
+      if (match) shown++;
+    });
+    groups.forEach((g) => (g.hidden = !g.querySelector('[data-term]:not([hidden])')));
+    empty?.classList.toggle('hidden', shown > 0);
+    if (count) count.textContent = q ? `${shown} / ${cards.length}` : '';
+  };
+  input?.addEventListener('input', apply);
+
+  // Open the technical detail of a term reached by #anchor.
+  const openHash = () => {
+    const el = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    el?.querySelector('details')?.setAttribute('open', '');
+    el?.classList.add('ring-1', 'ring-mint/40');
+  };
+  openHash();
+  window.addEventListener('hashchange', openHash);
+</script>

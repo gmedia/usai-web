@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { t, localePath } from '../i18n';
+
+// GitHub Pages serves one /404.html for every locale, so it speaks both.
+const en = t('en');
+const id = t('id');
+---
+
+<Base lang="en" path="/404/" page="404" title={en.notFound.title} description={en.notFound.body} noindex>
+  <section class="relative flex min-h-[80svh] items-center overflow-hidden pt-24">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(50%_50%_at_50%_40%,rgb(8_61_58/0.7),transparent)]" aria-hidden="true"></div>
+    <div class="container-page text-center">
+      <p class="font-mono text-sm tracking-[0.3em] text-mint">404 · usai</p>
+      <h1 class="mx-auto mt-6 max-w-2xl text-4xl font-extrabold sm:text-6xl"><span class="text-gradient">{en.notFound.title}</span></h1>
+      <p class="mx-auto mt-5 max-w-lg text-muted">{en.notFound.body}</p>
+      <p class="mx-auto mt-6 max-w-lg text-sm text-dim" lang="id">{id.notFound.title} {id.notFound.body}</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href={localePath('en', '/')} class="btn btn-primary">{en.notFound.home}</a>
+        <a href={localePath('id', '/')} class="btn btn-ghost" lang="id" hreflang="id">{id.notFound.home}</a>
+      </div>
+    </div>
+  </section>
+</Base>

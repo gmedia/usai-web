@@ -1,0 +1,30 @@
+name: Content or number correction
+description: A claim, number, or explanation is wrong, unclear, or does not match its source.
+labels: [content]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+    validations:
+      required: true
+  - type: textarea
+    id: text
+    attributes:
+      label: What the site says
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: What the source says (link to gmedia/usai)
+      description: For numbers, link the file under docs/measurements and quote the line.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Number does not match source
+        - Claim goes beyond the evidence
+        - Explanation is hard to understand
+        - Other

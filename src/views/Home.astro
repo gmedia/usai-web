@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Problem from '../components/home/Problem.astro';
+import Layers from '../components/home/Layers.astro';
+import Pipeline from '../components/home/Pipeline.astro';
+import Lifetimes from '../components/home/Lifetimes.astro';
+import Ownership from '../components/home/Ownership.astro';
+import CodeShowcase from '../components/home/CodeShowcase.astro';
+import Evidence from '../components/home/Evidence.astro';
+import Features from '../components/home/Features.astro';
+import ResearchTeaser from '../components/home/ResearchTeaser.astro';
+import Quickstart from '../components/home/Quickstart.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+import { t, type Lang } from '../i18n';
+import { usai, site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+
+const graph = [
+  {
+    '@type': 'SoftwareSourceCode',
+    '@id': `${site.url}/#software`,
+    name: 'Usai',
+    description: d.meta.defaultDescription,
+    codeRepository: usai.repo,
+    programmingLanguage: ['Rust', 'TypeScript'],
+    runtimePlatform: 'Linux',
+    license: 'https://www.apache.org/licenses/LICENSE-2.0',
+    version: usai.version,
+    dateModified: usai.released,
+    maintainer: { '@id': `${site.url}/#sakala` },
+  },
+  {
+    '@type': 'SoftwareApplication',
+    name: 'Usai',
+    applicationCategory: 'DeveloperApplication',
+    applicationSubCategory: 'Application runtime',
+    operatingSystem: 'Linux, macOS (development)',
+    softwareVersion: usai.version,
+    downloadUrl: usai.releases,
+    installUrl: usai.npmCreate,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    isAccessibleForFree: true,
+  },
+];
+---
+
+<Base {lang} path="/" page="home" title={d.home.meta.title} description={d.home.meta.description} {graph}>
+  <Hero {lang} />
+  <Problem {lang} />
+  <Layers {lang} />
+  <Pipeline {lang} />
+  <Lifetimes {lang} />
+  <Ownership {lang} />
+  <CodeShowcase {lang} />
+  <Evidence {lang} />
+  <Features {lang} />
+  <ResearchTeaser {lang} />
+  <Quickstart {lang} />
+  <FinalCta {lang} />
+</Base>

@@ -1,0 +1,99 @@
+---
+import { site, usai } from '../config/site';
+import { locales, localeMeta, localePath, defaultLang, t, type Lang } from '../i18n';
+
+export type PageKey = 'home' | 'benchmarks' | 'research' | 'glossary' | 'brand' | '404';
+
+interface Props {
+  lang: Lang;
+  /** Route key without locale, e.g. "/benchmarks/". */
+  path: string;
+  page: PageKey;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  /** Extra JSON-LD nodes merged into the page graph. */
+  graph?: Record<string, unknown>[];
+  breadcrumb?: string;
+}
+
+const { lang, path, page, title, description, noindex = false, graph = [], breadcrumb } = Astro.props;
+const dict = t(lang);
+const abs = (p: string) => new URL(p, site.url).href;
+const canonical = abs(localePath(lang, path));
+const ogImage = abs(`/og/${lang}-${page === '404' ? 'home' : page}.png`);
+const fullTitle = page === 'home' ? title : `${title} · Usai`;
+
+const orgId = `${site.url}/#sakala`;
+const nodes: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    url: site.url + '/',
+    name: 'Usai',
+    alternateName: dict.meta.tagline,
+    description: dict.meta.defaultDescription,
+    inLanguage: locales.map((l) => localeMeta[l].htmlLang),
+    publisher: { '@id': orgId },
+  },
+  {
+    '@type': 'Organization',
+    '@id': orgId,
+    name: 'Sakala',
+    description: 'Maintainers of Usai, an independent open-source project in the Sakala ecosystem.',
+    logo: abs('/icon-512.png'),
+    sameAs: [usai.repo],
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${canonical}#webpage`,
+    url: canonical,
+    name: fullTitle,
+    description,
+    inLanguage: localeMeta[lang].htmlLang,
+    isPartOf: { '@id': `${site.url}/#website` },
+    primaryImageOfPage: ogImage,
+  },
+  ...graph,
+];
+
+if (breadcrumb) {
+  nodes.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Usai', item: abs(localePath(lang, '/')) },
+      { '@type': 'ListItem', position: 2, name: breadcrumb, item: canonical },
+    ],
+  });
+}
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes }).replace(/</g, '\\u003c');
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+{!noindex && <link rel="canonical" href={canonical} />}
+{
+  !noindex &&
+    locales.map((l) => <link rel="alternate" hreflang={localeMeta[l].htmlLang} href={abs(localePath(l, path))} />)
+}
+{!noindex && <link rel="alternate" hreflang="x-default" href={abs(localePath(defaultLang, path))} />}
+
+<meta property="og:type" content={page === 'home' ? 'website' : 'article'} />
+<meta property="og:site_name" content="Usai" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={localeMeta[lang].og} />
+{locales.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`Usai — ${dict.meta.tagline}`} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json" set:html={jsonLd} />

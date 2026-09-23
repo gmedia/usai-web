@@ -1,0 +1,90 @@
+---
+import logo from '../assets/brand/usai-logo-white-no-tagline.svg?raw';
+import { usai, site } from '../config/site';
+import { t, localePath, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const f = d.footer;
+
+const columns = [
+  {
+    title: f.product,
+    links: [
+      { label: d.nav.how, href: localePath(lang, '/#how') },
+      { label: d.nav.evidence, href: localePath(lang, '/benchmarks/') },
+      { label: d.nav.research, href: localePath(lang, '/research/') },
+      { label: d.nav.glossary, href: localePath(lang, '/glossary/') },
+      { label: f.brand, href: localePath(lang, '/brand/') },
+    ],
+  },
+  {
+    title: f.resources,
+    links: [
+      { label: f.guide, href: usai.guide, ext: true },
+      { label: f.sdk, href: usai.sdk, ext: true },
+      { label: f.status, href: usai.status_doc, ext: true },
+      { label: f.roadmap, href: usai.roadmap, ext: true },
+      { label: f.supported, href: usai.supported, ext: true },
+    ],
+  },
+  {
+    title: f.community,
+    links: [
+      { label: 'GitHub', href: usai.repo, ext: true },
+      { label: f.releases, href: usai.releases, ext: true },
+      { label: f.issues, href: usai.issues, ext: true },
+      { label: f.security, href: usai.security, ext: true },
+      { label: f.governance, href: usai.governance, ext: true },
+      { label: f.siteSource, href: site.repoWeb, ext: true },
+    ],
+  },
+];
+const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+---
+
+<footer class="relative border-t border-line bg-abyss/60">
+  <div class="container-page grid gap-12 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+    <div class="max-w-sm">
+      <a href={localePath(lang, '/')} class="inline-block" aria-label={d.nav.home}>
+        <span class="block [&>svg]:h-8 [&>svg]:w-auto" set:html={logoSvg} />
+      </a>
+      <p class="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-mint">{d.meta.tagline}</p>
+      <p class="mt-5 text-sm leading-relaxed text-muted">{f.blurb}</p>
+      <p class="mt-4 font-mono text-xs text-dim">
+        v{usai.version} · {usai.license} · {d.common.status}
+      </p>
+    </div>
+    {
+      columns.map((c) => (
+        <div>
+          <h2 class="font-mono text-xs uppercase tracking-[0.16em] text-dim">{c.title}</h2>
+          <ul class="mt-4 space-y-2.5">
+            {c.links.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  class="text-sm text-muted transition-colors hover:text-mint"
+                  rel={'ext' in l && l.ext ? 'noopener' : undefined}
+                >
+                  {l.label}
+                  {'ext' in l && l.ext ? <span aria-hidden="true"> ↗</span> : null}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+  <div class="border-t border-line">
+    <div class="container-page flex flex-col gap-2 py-6 text-xs text-dim sm:flex-row sm:items-center sm:justify-between">
+      <p>{f.license}</p>
+      <p class="font-mono uppercase tracking-[0.16em]">{f.ecosystem}</p>
+    </div>
+  </div>
+</footer>

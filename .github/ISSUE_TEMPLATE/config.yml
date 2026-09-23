@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A problem with the Usai runtime
+    url: https://github.com/gmedia/usai/issues
+    about: Bugs and questions about the runtime belong in gmedia/usai.
+  - name: Security vulnerability
+    url: https://github.com/gmedia/usai-web/security/advisories/new
+    about: Please report privately.

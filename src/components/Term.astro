@@ -1,0 +1,141 @@
+---
+/**
+ * An inline glossary term: an underlined button that opens a small card with
+ * the plain-language meaning. Uses the native Popover API (no JS), anchored
+ * to the term where CSS anchor positioning exists, a bottom sheet elsewhere.
+ */
+import { t, localePath, type Lang } from '../i18n';
+import { nextId } from '../lib/ids';
+
+interface Props {
+  k: string;
+  lang: Lang;
+  label?: string;
+}
+
+const { k, lang, label } = Astro.props;
+const dict = t(lang);
+const terms = dict.glossary.terms as Record<string, { term: string; short: string; analogy: string }>;
+const entry = terms[k];
+if (!entry) throw new Error(`Unknown glossary term "${k}" (lang ${lang})`);
+
+const uid = nextId(`t-${k}`);
+const text = label ?? entry.term;
+---
+
+<span class="term"><button
+    type="button"
+    class="term-btn"
+    popovertarget={uid}
+    style={`anchor-name: --${uid}`}
+    aria-haspopup="dialog">{text}</button><span
+    id={uid}
+    popover="auto"
+    role="dialog"
+    aria-label={entry.term}
+    class="term-pop"
+    style={`position-anchor: --${uid}`}
+  ><span class="term-pop-kicker">{dict.common.termLabel}</span><span class="term-pop-title">{entry.term}</span><span class="term-pop-short">{entry.short}</span><span class="term-pop-analogy"><span class="term-pop-like">{dict.common.likeThis}</span> {entry.analogy}</span><a class="term-pop-link" href={localePath(lang, `/glossary/#${k}`)}>{dict.common.openGlossary} →</a></span></span>
+
+<style>
+  .term-btn {
+    display: inline;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: help;
+    text-decoration: underline dotted;
+    text-decoration-color: rgb(45 212 191 / 0.7);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.22em;
+    transition: color 0.2s;
+  }
+  .term-btn:hover {
+    color: var(--color-mint);
+  }
+
+  .term-pop {
+    /* bottom sheet by default (mobile, and browsers without anchor positioning) */
+    position: fixed;
+    inset: auto 0.75rem 0.75rem 0.75rem;
+    margin: 0 auto;
+    max-width: 26rem;
+    width: auto;
+    padding: 1rem 1.1rem 1.05rem;
+    border-radius: 1rem;
+    border: 1px solid rgb(45 212 191 / 0.28);
+    background: rgb(5 28 26 / 0.97);
+    backdrop-filter: blur(12px);
+    color: var(--color-fog);
+    box-shadow:
+      0 24px 60px -20px rgb(0 0 0 / 0.8),
+      0 0 0 1px rgb(255 255 255 / 0.03) inset;
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 1.5;
+    text-transform: none;
+  }
+  .term-pop:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .term-pop::backdrop {
+    background: rgb(0 0 0 / 0.25);
+  }
+
+  @supports (anchor-name: --a) {
+    @media (min-width: 768px) {
+      .term-pop {
+        inset: auto;
+        position-area: top;
+        margin: 0 0 0.6rem 0;
+        width: max-content;
+        max-width: 22rem;
+        position-try-fallbacks: flip-block;
+      }
+      .term-pop::backdrop {
+        background: transparent;
+      }
+    }
+  }
+
+  .term-pop-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mint);
+  }
+  .term-pop-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-paper);
+  }
+  .term-pop-short {
+    color: var(--color-fog);
+  }
+  .term-pop-analogy {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+  .term-pop-like {
+    color: var(--color-mint-soft);
+    font-weight: 600;
+  }
+  .term-pop-link {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--color-mint);
+    text-decoration: none;
+  }
+  .term-pop-link:hover {
+    text-decoration: underline;
+  }
+</style>

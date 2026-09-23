@@ -1,0 +1,117 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import { t, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const l = t(lang).home.lifetimes;
+const familyClass = ['fam-finite', 'fam-conn', 'fam-persist'];
+---
+
+<section id="lifetimes" class="section relative" aria-labelledby="lifetimes-title">
+  <div class="container-page">
+    <SectionHeading {lang} id="lifetimes-title" eyebrow={l.eyebrow} title={l.title} lead={l.lead} />
+
+    <ul class="mt-10 flex flex-wrap gap-3" data-reveal>
+      {
+        l.families.map((f, i) => (
+          <li class:list={['flex items-center gap-2.5 rounded-full border border-line px-3.5 py-1.5 text-sm', familyClass[i]]}>
+            <span class="legend size-2.5 rounded-full" aria-hidden="true" />
+            <span class="font-semibold text-paper">{f.name}</span>
+            <span class="hidden text-muted sm:inline">— {f.body}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="card mt-8 overflow-hidden" data-reveal>
+      <table class="w-full border-collapse text-left">
+        <caption class="sr-only">{l.title}</caption>
+        <thead class="hidden md:table-header-group">
+          <tr class="border-b border-line font-mono text-[0.7rem] uppercase tracking-[0.14em] text-dim">
+            <th scope="col" class="px-6 py-3 font-normal">{l.columns.kind}</th>
+            <th scope="col" class="px-6 py-3 font-normal">{l.columns.api}</th>
+            <th scope="col" class="w-[45%] px-6 py-3 font-normal">{l.columns.lifetime}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            l.kinds.map((k) => (
+              <tr class:list={['lt-row grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 border-b border-line px-5 py-4 last:border-0 md:table-row md:px-0 md:py-0', familyClass[k.family]]}>
+                <th scope="row" class="font-heading text-base font-semibold text-paper md:px-6 md:py-4">{k.kind}</th>
+                <td class="text-right font-mono text-xs text-mint md:px-6 md:py-4 md:text-left">{k.api}</td>
+                <td class="col-span-2 md:px-6 md:py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="relative h-2 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
+                      <span class="lt-bar absolute inset-y-0 left-0 rounded-full" style={`--w:${Math.round(k.span * 100)}%`} />
+                    </div>
+                    <span class="w-40 shrink-0 text-right text-xs text-muted sm:w-48">{k.lifetime}</span>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-8 grid gap-6 rounded-2xl border border-mint/20 bg-deep/30 p-6 sm:p-8 md:grid-cols-[auto_1fr] md:items-center" data-reveal>
+      <div class="flex size-12 items-center justify-center rounded-xl bg-mint/10 text-mint" aria-hidden="true">
+        <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 12h4l3-7 3 14 3-7h3"></path></svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold sm:text-xl">{l.notEverything.title}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted sm:text-base">{l.notEverything.body}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fam-finite {
+    --fam: #2dd4bf;
+  }
+  .fam-conn {
+    --fam: #4fbba7;
+  }
+  .fam-persist {
+    --fam: #177971;
+  }
+  .legend {
+    background: var(--fam);
+    box-shadow: 0 0 10px var(--fam);
+  }
+  .lt-bar {
+    width: var(--w);
+    background: linear-gradient(90deg, color-mix(in oklab, var(--fam) 40%, transparent), var(--fam));
+    box-shadow: 0 0 12px color-mix(in oklab, var(--fam) 60%, transparent);
+    transform-origin: left;
+    transition: transform 1.1s var(--ease-out-soft);
+  }
+  :global(.js-motion) .lt-row:not([data-in]) .lt-bar {
+    transform: scaleX(0);
+  }
+  .fam-persist .lt-bar {
+    background: linear-gradient(90deg, #177971, #31978a, #4fbba7);
+  }
+</style>
+
+<script>
+  const rows = document.querySelectorAll<HTMLElement>('.lt-row');
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const el = e.target as HTMLElement;
+          const index = Array.from(rows).indexOf(el);
+          setTimeout(() => el.setAttribute('data-in', ''), index * 70);
+          io.unobserve(el);
+        }
+      }),
+    { rootMargin: '0px 0px -10% 0px' },
+  );
+  rows.forEach((r) => io.observe(r));
+</script>

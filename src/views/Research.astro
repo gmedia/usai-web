@@ -1,0 +1,173 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { t, type Lang } from '../i18n';
+import { sources, usai } from '../config/site';
+import { researchLineage } from '../data/benchmarks';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const r = d.research;
+const fmt = new Intl.NumberFormat(lang === 'id' ? 'id-ID' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 3 });
+
+const bars = [
+  { metric: r.chartCpu, c: 'c = 1', ...researchLineage.cpuRatio.c1 },
+  { metric: r.chartCpu, c: 'c = 64', ...researchLineage.cpuRatio.c64 },
+  { metric: r.chartP50, c: 'c = 1', ...researchLineage.p50Ratio.c1 },
+  { metric: r.chartP50, c: 'c = 64', ...researchLineage.p50Ratio.c64 },
+];
+const scaleMax = 5;
+---
+
+<Base {lang} path="/research/" page="research" title={r.meta.title} description={r.meta.description} breadcrumb={d.nav.research}>
+  <section class="relative overflow-hidden pb-16 pt-32 sm:pt-40">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_30%_0%,rgb(8_61_58/0.7),transparent)]" aria-hidden="true"></div>
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow" data-reveal>{r.eyebrow}</p>
+      <h1 class="mt-4 text-4xl font-extrabold leading-[1.05] sm:text-6xl" data-reveal>{r.title}</h1>
+      <blockquote class="mt-10 border-l-2 border-mint pl-6" data-reveal>
+        <p class="font-heading text-2xl font-semibold italic leading-snug text-paper sm:text-3xl">“{r.question}”</p>
+      </blockquote>
+      <p class="mt-8 text-lg leading-relaxed text-muted" data-reveal>{r.lead}</p>
+    </div>
+  </section>
+
+  <section class="pb-24" aria-labelledby="arc-title">
+    <div class="container-page max-w-4xl">
+      <h2 id="arc-title" class="eyebrow" data-reveal>{r.arcTitle}</h2>
+      <ol class="relative mt-10">
+        <span class="absolute bottom-0 left-5 top-0 w-px bg-gradient-to-b from-mint/60 via-line to-mint/60 sm:left-6" aria-hidden="true"></span>
+        {
+          r.arc.map((a) => (
+            <li class="relative pb-12 pl-16 last:pb-0 sm:pl-20" data-reveal>
+              <span class:list={['absolute left-0 top-0 flex size-10 items-center justify-center rounded-full border-2 bg-ink font-heading font-bold sm:size-12', a.verdict === 'positive' ? 'border-mint text-mint shadow-[0_0_24px_rgba(45,212,191,0.35)]' : 'border-caution/70 text-caution']}>
+                {a.phase}
+              </span>
+              <p class:list={['font-mono text-[0.7rem] uppercase tracking-[0.16em]', a.verdict === 'positive' ? 'text-mint' : 'text-caution']}>{a.tag}</p>
+              <h3 class="mt-1.5 text-2xl font-bold">{a.title}</h3>
+              <p class="mt-2 leading-relaxed text-muted">{a.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="pb-24" aria-labelledby="lesson-title">
+    <div class="container-page">
+      <div class="relative overflow-hidden rounded-3xl border border-mint/25 bg-gradient-to-br from-deep/70 to-ink p-8 sm:p-12" data-reveal>
+        <p id="lesson-title" class="eyebrow">{r.lessonTitle}</p>
+        <p class="mt-5 max-w-3xl font-heading text-2xl font-bold leading-snug text-paper sm:text-4xl">“{r.lesson}”</p>
+        <p class="mt-5 max-w-2xl text-muted">{r.lessonBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-24" aria-labelledby="ratio-title">
+    <div class="container-page grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <div data-reveal>
+        <h2 id="ratio-title" class="text-3xl font-bold sm:text-4xl">{r.chartTitle}</h2>
+        <p class="mt-3 text-muted">{r.chartLead}</p>
+        <p class="mt-6 rounded-xl border border-caution/25 bg-caution/[0.04] p-4 text-sm leading-relaxed text-fog/85">
+          <Icon name="info" class="mr-1 inline size-4 align-[-3px] text-caution" />
+          {r.chartCaveat}
+        </p>
+      </div>
+      <div class="card p-6 sm:p-7" data-reveal data-reveal-delay="0.06">
+        <div class="mb-5 flex gap-5 text-xs text-muted">
+          <span class="flex items-center gap-2"><span class="h-2.5 w-5 rounded-sm bg-caution/60" aria-hidden="true"></span>{r.chartBefore}</span>
+          <span class="flex items-center gap-2"><span class="h-2.5 w-5 rounded-sm bg-mint" aria-hidden="true"></span>{r.chartAfter}</span>
+        </div>
+        <table class="w-full text-left text-sm">
+          <caption class="sr-only">{r.chartTitle}</caption>
+          <thead class="sr-only">
+            <tr><th scope="col">Metric</th><th scope="col">{r.chartBefore}</th><th scope="col">{r.chartAfter}</th></tr>
+          </thead>
+          <tbody>
+            {
+              bars.map((bar) => (
+                <tr class="block border-b border-line py-4 last:border-0">
+                  <th scope="row" class="block pb-2 font-normal">
+                    <span class="font-heading font-semibold text-paper">{bar.metric}</span>
+                    <span class="ml-2 font-mono text-xs text-dim">{bar.c}</span>
+                  </th>
+                  <td class="flex items-center gap-3 pb-1.5">
+                    <span class="ratio-bar h-3 rounded-sm bg-caution/60" style={`--w:${(bar.before / scaleMax) * 100}%`} />
+                    <span class="font-mono text-xs tabular-nums text-caution">{fmt.format(bar.before)}×</span>
+                  </td>
+                  <td class="flex items-center gap-3">
+                    <span class="ratio-bar h-3 rounded-sm bg-mint" style={`--w:${(bar.after / scaleMax) * 100}%`} />
+                    <span class="font-mono text-xs tabular-nums text-mint">{fmt.format(bar.after)}×</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="mt-4 font-mono text-[0.7rem] text-dim">
+          {r.chartFootnote
+            .replace('{cells}', String(researchLineage.cells))
+            .replace('{requests}', lang === 'id' ? '1,26 jt' : researchLineage.requests)
+            .replace('{failures}', String(researchLineage.failures))
+            .replace('{worlds}', String(researchLineage.worlds))}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-24" aria-labelledby="method-title">
+    <div class="container-page">
+      <h2 id="method-title" class="text-3xl font-bold sm:text-4xl" data-reveal>{r.methodTitle}</h2>
+      <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          r.method.map((m, i) => (
+            <li class="card p-5" data-reveal data-reveal-delay={String(i * 0.05)}>
+              <p class="font-mono text-xs text-mint">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="mt-2 font-heading text-lg font-semibold">{m.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">{m.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="pb-24" aria-label={r.notTitle}>
+    <div class="container-page grid gap-6 lg:grid-cols-2">
+      <div class="rounded-2xl border border-caution/25 bg-caution/[0.04] p-6 sm:p-7" data-reveal>
+        <h2 class="flex items-center gap-2 text-xl font-bold"><Icon name="warn" class="size-5 text-caution" /> {r.notTitle}</h2>
+        <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
+          {r.not.map((n) => <li class="flex gap-2"><span aria-hidden="true" class="text-caution">—</span>{n}</li>)}
+        </ul>
+      </div>
+      <div class="card p-6 sm:p-7" data-reveal data-reveal-delay="0.06">
+        <h2 class="text-xl font-bold">{r.openTitle}</h2>
+        <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
+          {r.open.map((n) => <li class="flex gap-2"><span aria-hidden="true" class="text-mint">?</span>{n}</li>)}
+        </ul>
+        <a href={usai.openQuestions} class="link mt-5 inline-block text-sm" rel="noopener">OPEN-QUESTIONS.md ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-28">
+    <div class="container-page max-w-3xl text-center" data-reveal>
+      <p class="text-sm leading-relaxed text-muted">{r.sourceNote}</p>
+      <a href={sources.researchReference} class="btn btn-ghost mt-6" rel="noopener">{r.sourceCta} ↗</a>
+      <p class="mt-16 font-heading text-2xl font-semibold text-paper sm:text-3xl"><span class="text-gradient">{r.closing}</span></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ratio-bar {
+    display: block;
+    width: var(--w);
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-out-soft);
+  }
+</style>

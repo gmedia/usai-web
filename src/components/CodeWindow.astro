@@ -1,0 +1,30 @@
+---
+import { Code } from 'astro:components';
+import { usaiTheme } from '../lib/shiki-theme';
+
+interface Props {
+  code: string;
+  lang?: 'ts' | 'text' | 'bash';
+  title?: string;
+  tone?: 'default' | 'error' | 'ok';
+  class?: string;
+  /** Wrap long lines (terminal output) instead of scrolling. */
+  wrap?: boolean;
+}
+
+const { code, lang = 'ts', title, tone = 'default', class: className, wrap = lang === 'text' } = Astro.props;
+---
+
+<figure class:list={['code-frame overflow-hidden', wrap && 'code-wrap', 'rounded-2xl border bg-ink/90 shadow-[0_30px_80px_-40px_rgb(0,0,0,0.9)]', tone === 'error' ? 'border-caution/30' : tone === 'ok' ? 'border-mint/30' : 'border-line', className]}>
+  <figcaption class="flex items-center gap-3 border-b border-line px-4 py-2.5">
+    <span class="flex gap-1.5" aria-hidden="true">
+      <span class="size-2.5 rounded-full bg-white/10"></span>
+      <span class="size-2.5 rounded-full bg-white/10"></span>
+      <span class="size-2.5 rounded-full bg-white/10"></span>
+    </span>
+    {title && <span class:list={['truncate font-mono text-xs', tone === 'error' ? 'text-caution' : 'text-dim']}>{title}</span>}
+  </figcaption>
+  <div>
+    <Code {code} {lang} theme={usaiTheme} />
+  </div>
+</figure>
