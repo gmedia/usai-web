@@ -1,0 +1,143 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EvidenceBox from '../components/EvidenceBox.astro';
+import Icon from '../components/Icon.astro';
+import { t, localePath, localeMeta, type Lang } from '../i18n';
+import { site, usai } from '../config/site';
+import { type Post, postSlug, postPath, translationsOf, readingMinutes, formatDate } from '../lib/blog';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const lang = post.data.lang as Lang;
+const d = t(lang);
+const b = d.blog;
+const { Content, headings } = await render(post);
+const slug = postSlug(post);
+const translations = await translationsOf(post);
+const alternates = Object.keys(translations) as Lang[];
+const others = alternates.filter((l) => l !== lang);
+const url = new URL(postPath(post), site.url).href;
+const ogImage = `/og/${lang}-blog-${slug}.png`;
+
+const graph = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${url}#post`,
+    headline: post.data.title,
+    description: post.data.description,
+    inLanguage: lang,
+    datePublished: post.data.date.toISOString(),
+    dateModified: (post.data.updated ?? post.data.date).toISOString(),
+    author: { '@type': 'Organization', name: post.data.author },
+    publisher: { '@id': `${site.url}/#sakala` },
+    mainEntityOfPage: url,
+    image: new URL(ogImage, site.url).href,
+    keywords: post.data.tags.join(', '),
+    about: { '@id': `${site.url}/#software` },
+  },
+];
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<Base
+  {lang}
+  path={`/blog/${slug}/`}
+  page="post"
+  title={post.data.title}
+  description={post.data.description}
+  breadcrumb={d.nav.blog}
+  {alternates}
+  {ogImage}
+  noindex={post.data.draft}
+  article={{ published: post.data.date, modified: post.data.updated, author: post.data.author, tags: post.data.tags }}
+  {graph}
+>
+  <article class="relative pb-24 pt-32 sm:pt-40">
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[36rem] bg-[radial-gradient(55%_60%_at_50%_0%,rgb(8_61_58/0.65),transparent)]" aria-hidden="true"></div>
+    <div class="container-page">
+      <div class="mx-auto max-w-3xl">
+        <a href={localePath(lang, '/blog/')} class="inline-flex items-center gap-1.5 text-sm text-muted hover:text-mint">
+          <span aria-hidden="true">←</span>
+          {b.back}
+        </a>
+        {post.data.draft && <p class="mt-6 rounded-lg border border-caution/40 bg-caution/10 px-3 py-2 text-sm text-caution">{b.draft}</p>}
+        {post.data.series && <p class="eyebrow mt-8">{post.data.series.name} · #{post.data.series.part}</p>}
+        <h1 class="mt-4 text-4xl font-extrabold leading-[1.08] sm:text-5xl">{post.data.title}</h1>
+        <p class="mt-5 text-lg leading-relaxed text-muted">{post.data.description}</p>
+        <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-dim">
+          <span>
+            {b.by} {post.data.author}
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>
+            {b.published} <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time>
+          </span>
+          {
+            post.data.updated && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>
+                  {b.updated} <time datetime={post.data.updated.toISOString()}>{formatDate(post.data.updated, lang)}</time>
+                </span>
+              </>
+            )
+          }
+          <span aria-hidden="true">·</span>
+          <span>
+            {readingMinutes(post.body)} {b.minutes}
+          </span>
+        </p>
+        {
+          others.length > 0 && (
+            <p class="mt-3 text-sm text-muted">
+              {b.alsoIn}{' '}
+              {others.map((l, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <a class="link" href={postPath(translations[l]!)} hreflang={localeMeta[l].htmlLang} lang={localeMeta[l].htmlLang}>
+                    {localeMeta[l].label}
+                  </a>
+                </>
+              ))}
+            </p>
+          )
+        }
+
+        <EvidenceBox {lang} evidence={post.data.evidence} />
+
+        {
+          toc.length > 2 && (
+            <nav aria-label="Contents" class="mb-10 rounded-xl border border-line p-5">
+              <ol class="space-y-1.5 text-sm">
+                {toc.map((h, i) => (
+                  <li>
+                    <a href={`#${h.slug}`} class="text-muted hover:text-mint">
+                      <span class="mr-2 font-mono text-xs text-dim">{String(i + 1).padStart(2, '0')}</span>
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+
+        <div class="prose-usai">
+          <Content />
+        </div>
+
+        <div class="mt-16 rounded-2xl border border-line p-6">
+          <p class="text-sm leading-relaxed text-muted">{b.discuss}</p>
+          <a href={usai.issues} class="btn btn-ghost mt-4 !min-h-10 text-sm" rel="noopener">
+            <Icon name="github" class="size-4" />
+            {b.discussCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Base>

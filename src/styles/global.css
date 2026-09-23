@@ -294,3 +294,107 @@
     word-break: break-word;
   }
 }
+
+/* Blog article typography */
+@layer components {
+  .prose-usai {
+    color: rgb(229 231 235 / 0.9);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose-usai > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-usai h2 {
+    margin-top: 2.4em;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    font-weight: 700;
+    scroll-margin-top: 6rem;
+  }
+  .prose-usai h3 {
+    margin-top: 2em;
+    font-size: 1.3rem;
+    font-weight: 700;
+    scroll-margin-top: 6rem;
+  }
+  .prose-usai a {
+    color: var(--color-mint);
+    text-decoration: underline;
+    text-decoration-color: rgb(45 212 191 / 0.4);
+    text-underline-offset: 3px;
+  }
+  .prose-usai a:hover {
+    text-decoration-color: currentColor;
+  }
+  .prose-usai strong {
+    color: var(--color-paper);
+    font-weight: 600;
+  }
+  .prose-usai ul,
+  .prose-usai ol {
+    padding-left: 1.3em;
+  }
+  .prose-usai ul {
+    list-style: disc;
+  }
+  .prose-usai ol {
+    list-style: decimal;
+  }
+  .prose-usai li + li {
+    margin-top: 0.4em;
+  }
+  .prose-usai li::marker {
+    color: var(--color-mint);
+  }
+  .prose-usai blockquote {
+    border-left: 2px solid var(--color-mint);
+    padding-left: 1.2em;
+    color: var(--color-paper);
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+  .prose-usai :not(pre) > code {
+    border-radius: 0.375rem;
+    background: rgb(255 255 255 / 0.06);
+    padding: 0.1em 0.4em;
+    font-size: 0.88em;
+    color: var(--color-mint);
+  }
+  .prose-usai pre {
+    overflow-x: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--color-line);
+    background: #03110f !important;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  .prose-usai table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .prose-usai th,
+  .prose-usai td {
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.6em 0.9em 0.6em 0;
+    text-align: left;
+  }
+  .prose-usai th {
+    color: var(--color-dim);
+    font-weight: 500;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .prose-usai hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin-block: 2.5em;
+  }
+}

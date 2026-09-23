@@ -1,0 +1,69 @@
+---
+/** The editorial signature of every Usai post: the limits of its claims. */
+import Icon from './Icon.astro';
+import { t, type Lang } from '../i18n';
+import type { Post } from '../lib/blog';
+
+interface Props {
+  lang: Lang;
+  evidence: Post['data']['evidence'];
+}
+
+const { lang, evidence } = Astro.props;
+const e = t(lang).blog.evidence;
+---
+
+<aside class="evidence not-prose my-10 overflow-hidden rounded-2xl border border-line bg-abyss/70" aria-label={e.title}>
+  <div class="flex items-center justify-between gap-3 border-b border-line px-5 py-3">
+    <p class="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-mint"><Icon name="info" class="size-4" /> {e.title}</p>
+    <p class="hidden text-xs text-dim sm:block">{e.hint}</p>
+  </div>
+  {
+    evidence === false ? (
+      <p class="px-5 py-4 text-sm text-muted">{e.none}</p>
+    ) : (
+      <dl class="grid gap-x-8 gap-y-5 px-5 py-5 text-sm md:grid-cols-2">
+        <div>
+          <dt class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-dim">{e.status}</dt>
+          <dd class="mt-1 text-fog">{evidence.status}</dd>
+        </div>
+        {evidence.setup && (
+          <div>
+            <dt class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-dim">{e.setup}</dt>
+            <dd class="mt-1 text-fog">{evidence.setup}</dd>
+          </div>
+        )}
+        <div>
+          <dt class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-mint">{e.supports}</dt>
+          <dd class="mt-1.5">
+            <ul class="space-y-1.5 text-muted">
+              {evidence.supports.map((s) => (
+                <li class="flex gap-2"><span aria-hidden="true" class="w-4 shrink-0 text-mint">✓</span><span>{s}</span></li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+        <div>
+          <dt class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-caution">{e.doesNotSupport}</dt>
+          <dd class="mt-1.5">
+            <ul class="space-y-1.5 text-muted">
+              {evidence.doesNotSupport.map((s) => (
+                <li class="flex gap-2"><span aria-hidden="true" class="w-4 shrink-0 text-caution">✕</span><span>{s}</span></li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+        <div class="md:col-span-2">
+          <dt class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-dim">{e.sources}</dt>
+          <dd class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5">
+            {evidence.sources.map((s) => (
+              <a href={s.url} class="inline-flex items-center gap-1 font-mono text-xs text-mint/90 hover:text-mint" rel="noopener">
+                {s.label} <Icon name="external" class="size-3" />
+              </a>
+            ))}
+          </dd>
+        </div>
+      </dl>
+    )
+  }
+</aside>

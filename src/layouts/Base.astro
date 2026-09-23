@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Seo, { type PageKey } from '../components/Seo.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { t, localeMeta, type Lang } from '../i18n';
+import { t, localeMeta, localePath, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -14,9 +14,12 @@ interface Props {
   noindex?: boolean;
   graph?: Record<string, unknown>[];
   breadcrumb?: string;
+  alternates?: Lang[];
+  ogImage?: string;
+  article?: { published: Date; modified?: Date; author: string; tags?: string[] };
 }
 
-const { lang, path, page, title, description, noindex, graph, breadcrumb } = Astro.props;
+const { lang, path, page, title, description, noindex, graph, breadcrumb, alternates, ogImage, article } = Astro.props;
 const d = t(lang);
 ---
 
@@ -33,7 +36,8 @@ const d = t(lang);
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <Seo {lang} {path} {page} {title} {description} {noindex} {graph} {breadcrumb} />
+    <link rel="alternate" type="application/rss+xml" title={`Usai blog (${localeMeta[lang].label})`} href={localePath(lang, '/blog/rss.xml').replace(/\/$/, '')} />
+    <Seo {lang} {path} {page} {title} {description} {noindex} {graph} {breadcrumb} {alternates} {ogImage} {article} />
     <script is:inline>
       // Hide reveal targets only when motion will actually run; a safety
       // timer shows everything if the motion bundle never arrives.
@@ -54,7 +58,7 @@ const d = t(lang);
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-teal focus:px-4 focus:py-2 focus:text-white"
       >{d.nav.skip}</a
     >
-    <Header {lang} {path} />
+    <Header {lang} {path} {alternates} />
     <main id="main">
       <slot />
     </main>

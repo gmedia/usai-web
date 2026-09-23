@@ -19,6 +19,7 @@ export const id: Dict = {
     how: 'Cara kerja',
     evidence: 'Benchmark',
     research: 'Riset',
+    blog: 'Blog',
     glossary: 'Glosarium',
     docs: 'Dokumentasi',
     github: 'GitHub',
@@ -243,6 +244,34 @@ export const id: Dict = {
       more: 'Laporan benchmark lengkap',
     },
 
+    fit: {
+      eyebrow: 'Cocok untukmu?',
+      title: 'Lebih lambat dari Node di request trivial. Lalu kenapa dipakai?',
+      lead: 'Karena kecepatan di request yang tidak mengerjakan apa-apa memang bukan tujuan Usai. Usai untuk tim yang ingin kepraktisan backend persisten **tanpa** memberi setiap state aplikasi umur yang sama dengan prosesnya.',
+      goodTitle: 'Cocok',
+      good: [
+        { title: 'Kamu ingin umur seukuran request di server sendiri', body: 'Mental model serverless — pekerjaan datang, dijalankan, selesai — tapi di VPS, di Docker, di samping PostgreSQL biasa, lengkap dengan pool, cron, queue, dan WebSocket.' },
+        { title: 'Traffic-mu kebanyakan sepi, lalu burst', body: 'API billing, webhook, backend admin, tools internal, SaaS kecil. CPU idle yang nyaris nol dan respons dingin yang cepat lebih penting daripada CPU di jalur panas.' },
+        { title: 'Konteks yang bocor antar-request akan merugikan', body: 'Backend multi-tenant, di mana `currentTenant` yang nyasar di scope module adalah insiden nyata. World baru per request adalah kebersihan lifecycle — bukan batas keamanan.' },
+        { title: 'Kamu menjalankan lebih dari HTTP', body: 'Task, cron, queue consumer, stream, socket, dan service — masing-masing dengan umur yang dideklarasikan, bukan satu model proses untuk semuanya.' },
+        { title: 'Kamu memulai sesuatu yang baru', body: 'Layanan greenfield tidak menanggung biaya migrasi. Usai masih muda; lebih mudah diadopsi untuk worker webhook baru daripada monolith 400 ribu baris.' },
+      ],
+      notTitle: 'Mungkin belum',
+      not: [
+        'API panas yang CPU-bound, di mana setiap milidetik CPU per request adalah uang.',
+        'Aplikasi yang bergantung pada ekosistem Node yang luas: native addon, `fs`, `process`, `require` dinamis.',
+        'Codebase besar yang sudah berjalan, dengan tim yang sudah mengelola state dengan hati-hati.',
+        'Apa pun yang harus menjalankan kode tak tepercaya, atau yang butuh batas keamanan yang dideklarasikan.',
+      ],
+      realTitle: 'Masalah ini bukan cuma milik kami',
+      realLead: 'Platform yang memakai ulang lingkungan eksekusi demi kecepatan mendokumentasikan ketegangan yang sama — dan menyerahkannya pada disiplinmu:',
+      quotes: [
+        { who: 'AWS Lambda best practices', quote: 'To avoid potential data leaks across invocations, don’t use the execution environment to store user data, events, or other information with security implications.', url: 'https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html' },
+        { who: 'Cloudflare Workers best practices', quote: 'Workers reuse isolates across requests. A variable set during one request is still present during the next.', url: 'https://developers.cloudflare.com/workers/best-practices/workers-best-practices/' },
+      ],
+      realClosing: 'Usai membuat batas itu struktural: infrastruktur yang mahal sengaja dipakai ulang, state aplikasi yang bisa berubah tidak.',
+    },
+
     features: {
       eyebrow: 'Yang sudah tersedia',
       title: 'Semua kebutuhan backend, masing-masing dengan umur yang tepat.',
@@ -461,6 +490,38 @@ export const id: Dict = {
     sourceNote: 'Repositori riset bersifat privat untuk maintainer. Kesimpulannya dibawa oleh lifecycle contract, ADR, dan research reference publik di repositori runtime.',
     sourceCta: 'Research reference publik',
     closing: 'Ketika sesuatu sudah menuntaskan pekerjaan yang membenarkan umurnya: usai.',
+  },
+
+  blog: {
+    meta: {
+      title: 'Blog — catatan engineering dari Usai',
+      description: 'Catatan panjang tentang lifetime, pengukuran, dan kesalahan kami saat membangun Usai. Setiap tulisan menyatakan apa yang didukung buktinya — dan apa yang tidak.',
+    },
+    eyebrow: 'Blog',
+    title: 'Catatan engineering.',
+    lead: 'Cara kerja Usai, apa yang kami ukur, dan di mana kami salah. Setiap tulisan menghentikan klaimnya tepat di batas buktinya.',
+    rss: 'Feed RSS',
+    empty: 'Tulisan pertama sedang ditulis. Berlangganan feed-nya supaya langsung dapat saat terbit.',
+    readMore: 'Baca',
+    minutes: 'menit baca',
+    draft: 'Draft — belum terbit',
+    by: 'Oleh',
+    published: 'Terbit',
+    updated: 'Diperbarui',
+    back: 'Semua tulisan',
+    alsoIn: 'Tersedia juga dalam',
+    evidence: {
+      title: 'Kotak bukti',
+      hint: 'Setiap tulisan Usai menyatakan batas klaimnya.',
+      status: 'Status saat ditulis',
+      setup: 'Setup',
+      supports: 'Yang didukung bukti ini',
+      doesNotSupport: 'Yang tidak didukung',
+      sources: 'Data sumber',
+      none: 'Tulisan ini tidak membuat klaim terukur.',
+    },
+    discuss: 'Menemukan kesalahan, atau kasus di mana ini tidak berlaku? Buka issue — koreksi diterbitkan sebagai pembaruan tulisan.',
+    discussCta: 'Buka issue',
   },
 
   glossary: {

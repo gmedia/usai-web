@@ -8,14 +8,27 @@ import { createRequire } from 'node:module';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { locales, t, type Lang } from '../../i18n';
+import { getPosts, postSlug } from '../../lib/blog';
 import { usai } from '../../config/site';
 import logoRaw from '../../assets/brand/usai-logo-white-no-tagline.svg?raw';
 
-const pages = ['home', 'benchmarks', 'research', 'glossary', 'brand'] as const;
+const pages = ['home', 'benchmarks', 'research', 'glossary', 'brand', 'blog'] as const;
 type Page = (typeof pages)[number];
+type OgProps = { lang: Lang; page: Page; post?: { title: string; kicker: string } };
 
-export const getStaticPaths: GetStaticPaths = () =>
-  locales.flatMap((lang) => pages.map((page) => ({ params: { slug: `${lang}-${page}` }, props: { lang, page } })));
+export const getStaticPaths: GetStaticPaths = async () => {
+  const fixed = locales.flatMap((lang) => pages.map((page) => ({ params: { slug: `${lang}-${page}` }, props: { lang, page } })));
+  const posts = (await Promise.all(locales.map((l) => getPosts(l)))).flat();
+  const postPaths = posts.map((p) => ({
+    params: { slug: `${p.data.lang}-blog-${postSlug(p)}` },
+    props: {
+      lang: p.data.lang,
+      page: 'blog',
+      post: { title: p.data.title, kicker: p.data.series ? `${p.data.series.name} · #${p.data.series.part}` : 'Blog' },
+    },
+  }));
+  return [...fixed, ...postPaths];
+};
 
 const require = createRequire(import.meta.url);
 const font = (pkg: string, file: string) => readFile(require.resolve(`${pkg}/files/${file}`));
@@ -86,12 +99,14 @@ function titleFor(lang: Lang, page: Page) {
       return { kicker: d.glossary.eyebrow, title: d.glossary.title };
     case 'brand':
       return { kicker: d.brand.eyebrow, title: d.brand.title };
+    case 'blog':
+      return { kicker: d.blog.eyebrow, title: d.blog.title };
   }
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  const { lang, page } = props as { lang: Lang; page: Page };
-  const { kicker, title } = titleFor(lang, page);
+  const { lang, page, post } = props as OgProps;
+  const { kicker, title } = post ?? titleFor(lang, page);
   const d = t(lang);
 
   const h = (type: string, style: Record<string, unknown>, children?: unknown, extra: Record<string, unknown> = {}) => ({
@@ -135,7 +150,7 @@ export const GET: APIRoute = async ({ props }) => {
         h('div', { display: 'flex', fontSize: '24px', letterSpacing: '3px', wordSpacing: '6px', textTransform: 'uppercase', color: '#2dd4bf', fontWeight: 500 }, kicker),
         h(
           'div',
-          { display: 'flex', marginTop: '18px', fontFamily: 'Jakarta', fontWeight: 800, fontSize: title.length > 48 ? '62px' : '76px', lineHeight: 1.06, letterSpacing: '-1.5px' },
+          { display: 'flex', marginTop: '18px', fontFamily: 'Jakarta', fontWeight: 800, fontSize: title.length > 70 ? '54px' : title.length > 48 ? '62px' : '76px', lineHeight: 1.06, letterSpacing: '-1.5px' },
           title,
         ),
       ]),

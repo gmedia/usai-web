@@ -7,9 +7,12 @@ import Icon from './Icon.astro';
 interface Props {
   lang: Lang;
   path: string;
+  /** Locales this page exists in; others link to their blog index. */
+  alternates?: Lang[];
 }
 
-const { lang, path } = Astro.props;
+const { lang, path, alternates = [...locales] } = Astro.props;
+const switchHref = (l: Lang) => localePath(l, alternates.includes(l) ? path : '/blog/');
 const d = t(lang);
 
 const links = [
@@ -17,6 +20,7 @@ const links = [
   { href: localePath(lang, '/benchmarks/'), label: d.nav.evidence, match: '/benchmarks/' },
   { href: localePath(lang, '/research/'), label: d.nav.research, match: '/research/' },
   { href: localePath(lang, '/glossary/'), label: d.nav.glossary, match: '/glossary/' },
+  { href: localePath(lang, '/blog/'), label: d.nav.blog, match: '/blog/' },
 ];
 const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 ---
@@ -33,7 +37,7 @@ const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false"
           <a
             href={l.href}
             class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-paper"
-            aria-current={path === l.match ? 'page' : undefined}
+            aria-current={path === l.match || (l.match === '/blog/' && path.startsWith('/blog/')) ? 'page' : undefined}
           >
             {l.label}
           </a>
@@ -49,7 +53,7 @@ const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false"
         {
           locales.map((l) => (
             <a
-              href={localePath(l, path)}
+              href={switchHref(l)}
               hreflang={localeMeta[l].htmlLang}
               lang={localeMeta[l].htmlLang}
               aria-current={l === lang ? 'true' : undefined}
@@ -107,7 +111,7 @@ const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false"
       {
         locales.map((l) => (
           <a
-            href={localePath(l, path)}
+            href={switchHref(l)}
             hreflang={localeMeta[l].htmlLang}
             lang={localeMeta[l].htmlLang}
             aria-current={l === lang ? 'true' : undefined}

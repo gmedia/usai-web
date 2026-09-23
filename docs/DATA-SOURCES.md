@@ -9,6 +9,7 @@ Every number on the site comes from a file in [`gmedia/usai`](https://github.com
 | `reliability` | `docs/STATUS.md`, `docs/measurements/2026-09-18-p5-p6-qualification.md`, `-fuzzing.md`, `-threat-verification.md` | "0 × 502" is the **two-replica** rolling restart; a single replica has a restart window |
 | `researchLineage` | `docs/RESEARCH-REFERENCE.md` | Public research numbers only; research page carries the caveats |
 | `snippets` | `README.md`, `examples/hello`, `docs/GUIDE.md` §5–§10, §15 | The counter snippet is illustrative (labelled as such) |
+| `snippets.antiPatternError` | `crates/usai-runtime/src/world.rs` (`LifecycleViolation::detached_work`), checked against a real log line in `scripts/qualification/threat/out/*/server.log` | Line-wrapped for the page. `GOAL.md` §17 shows an older design wording; do not use it |
 | Version, release date | `Cargo.toml`, `CHANGELOG.md` | `src/config/site.ts` |
 | Platforms | `SUPPORTED.md` | Quickstart section |
 

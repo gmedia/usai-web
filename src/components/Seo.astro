@@ -2,7 +2,7 @@
 import { site, usai } from '../config/site';
 import { locales, localeMeta, localePath, defaultLang, t, type Lang } from '../i18n';
 
-export type PageKey = 'home' | 'benchmarks' | 'research' | 'glossary' | 'brand' | '404';
+export type PageKey = 'home' | 'benchmarks' | 'research' | 'glossary' | 'brand' | 'blog' | 'post' | '404';
 
 interface Props {
   lang: Lang;
@@ -15,14 +15,19 @@ interface Props {
   /** Extra JSON-LD nodes merged into the page graph. */
   graph?: Record<string, unknown>[];
   breadcrumb?: string;
+  /** Locales this page exists in (defaults to all). */
+  alternates?: Lang[];
+  /** Path of the OG image, e.g. "/og/en-blog-my-post.png". */
+  ogImage?: string;
+  article?: { published: Date; modified?: Date; author: string; tags?: string[] };
 }
 
-const { lang, path, page, title, description, noindex = false, graph = [], breadcrumb } = Astro.props;
+const { lang, path, page, title, description, noindex = false, graph = [], breadcrumb, alternates = [...locales], ogImage: ogPath, article } = Astro.props;
 const dict = t(lang);
 const abs = (p: string) => new URL(p, site.url).href;
 const canonical = abs(localePath(lang, path));
-const ogImage = abs(`/og/${lang}-${page === '404' ? 'home' : page}.png`);
-const fullTitle = page === 'home' ? title : `${title} · Usai`;
+const ogImage = abs(ogPath ?? `/og/${lang}-${page === '404' || page === 'post' ? 'home' : page}.png`);
+const fullTitle = page === 'home' ? title : page === 'post' ? `${title} · Usai blog` : `${title} · Usai`;
 
 const orgId = `${site.url}/#sakala`;
 const nodes: Record<string, unknown>[] = [
@@ -76,17 +81,21 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': node
 {!noindex && <link rel="canonical" href={canonical} />}
 {
   !noindex &&
-    locales.map((l) => <link rel="alternate" hreflang={localeMeta[l].htmlLang} href={abs(localePath(l, path))} />)
+    alternates.map((l) => <link rel="alternate" hreflang={localeMeta[l].htmlLang} href={abs(localePath(l, path))} />)
 }
-{!noindex && <link rel="alternate" hreflang="x-default" href={abs(localePath(defaultLang, path))} />}
+{!noindex && alternates.length > 1 && <link rel="alternate" hreflang="x-default" href={abs(localePath(alternates.includes(defaultLang) ? defaultLang : alternates[0], path))} />}
 
-<meta property="og:type" content={page === 'home' ? 'website' : 'article'} />
+<meta property="og:type" content={article ? 'article' : 'website'} />
+{article && <meta property="article:published_time" content={article.published.toISOString()} />}
+{article?.modified && <meta property="article:modified_time" content={article.modified.toISOString()} />}
+{article && <meta property="article:author" content={article.author} />}
+{article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
 <meta property="og:site_name" content="Usai" />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:locale" content={localeMeta[lang].og} />
-{locales.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
+{alternates.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />

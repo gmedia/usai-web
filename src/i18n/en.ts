@@ -23,6 +23,7 @@ export const en = {
     how: 'How it works',
     evidence: 'Benchmarks',
     research: 'Research',
+    blog: 'Blog',
     glossary: 'Glossary',
     docs: 'Docs',
     github: 'GitHub',
@@ -247,6 +248,34 @@ export const en = {
       more: 'Full benchmark report',
     },
 
+    fit: {
+      eyebrow: 'Is it for you?',
+      title: 'Slower than Node on a trivial request. So why use it?',
+      lead: 'Because speed on a request that does nothing is not what Usai is for. It is for teams who want the practicality of a persistent backend **without** giving every piece of application state the lifetime of the process.',
+      goodTitle: 'A good fit',
+      good: [
+        { title: 'You want request-shaped lifetimes on your own servers', body: 'The mental model of serverless — work arrives, runs, ends — but on a VPS, in Docker, next to a plain PostgreSQL, with pools, cron, queues and WebSockets.' },
+        { title: 'Your traffic is mostly idle, then bursty', body: 'Billing APIs, webhooks, admin backends, internal tools, small SaaS. Near-zero idle CPU and fast cold responses matter more than hot-path CPU.' },
+        { title: 'Leaking context between requests would hurt', body: 'Multi-tenant backends where a stray `currentTenant` in module scope is a real incident. A fresh world per request is lifecycle hygiene — not a security boundary.' },
+        { title: 'You run more than HTTP', body: 'Tasks, cron, queue consumers, streams, sockets and services — each with its own declared lifetime instead of one process model for everything.' },
+        { title: 'You are starting something new', body: 'Greenfield services avoid migration cost. Usai is young; it is easier to adopt for a new webhook worker than for a 400k-line monolith.' },
+      ],
+      notTitle: 'Probably not (yet)',
+      not: [
+        'A hot, CPU-bound API where every millisecond of CPU per request is money.',
+        'An app that depends on the wider Node ecosystem: native addons, `fs`, `process`, dynamic `require`.',
+        'A large, working codebase whose team already manages state carefully.',
+        'Anything that must run untrusted code, or that needs a declared security boundary.',
+      ],
+      realTitle: 'The problem is not ours alone',
+      realLead: 'Platforms that reuse execution environments for speed document the same tension — and leave it to your discipline:',
+      quotes: [
+        { who: 'AWS Lambda best practices', quote: 'To avoid potential data leaks across invocations, don’t use the execution environment to store user data, events, or other information with security implications.', url: 'https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html' },
+        { who: 'Cloudflare Workers best practices', quote: 'Workers reuse isolates across requests. A variable set during one request is still present during the next.', url: 'https://developers.cloudflare.com/workers/best-practices/workers-best-practices/' },
+      ],
+      realClosing: 'Usai makes that boundary structural: expensive infrastructure is reused on purpose, mutable application state is not.',
+    },
+
     features: {
       eyebrow: 'What ships today',
       title: 'Everything a backend needs, each with the right lifetime.',
@@ -465,6 +494,38 @@ export const en = {
     sourceNote: 'The research repository is private to maintainers. Its conclusions are carried by the runtime’s lifecycle contracts, ADRs and the public research reference.',
     sourceCta: 'Public research reference',
     closing: 'When a thing has finished the work that justifies its lifetime: usai.',
+  },
+
+  blog: {
+    meta: {
+      title: 'Blog — engineering notes from Usai',
+      description: 'Long-form notes on lifetimes, measurements and what we got wrong while building Usai. Every post states what its evidence supports — and what it does not.',
+    },
+    eyebrow: 'Blog',
+    title: 'Engineering notes.',
+    lead: 'How Usai works, what we measured, and what we got wrong. Every post ends its claims where its evidence ends.',
+    rss: 'RSS feed',
+    empty: 'The first post is being written. Subscribe to the feed to get it when it lands.',
+    readMore: 'Read',
+    minutes: 'min read',
+    draft: 'Draft — not published',
+    by: 'By',
+    published: 'Published',
+    updated: 'Updated',
+    back: 'All posts',
+    alsoIn: 'Also available in',
+    evidence: {
+      title: 'Evidence box',
+      hint: 'Every Usai post states the limits of its claims.',
+      status: 'Status when written',
+      setup: 'Setup',
+      supports: 'What this evidence supports',
+      doesNotSupport: 'What it does not support',
+      sources: 'Source data',
+      none: 'This post makes no measured claims.',
+    },
+    discuss: 'Found a mistake or a case where this breaks? Open an issue — corrections are published as updates to the post.',
+    discussCta: 'Open an issue',
   },
 
   glossary: {

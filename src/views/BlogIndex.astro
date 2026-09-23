@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import { t, localePath, type Lang } from '../i18n';
+import { site } from '../config/site';
+import { getPosts, postPath, readingMinutes, formatDate } from '../lib/blog';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const b = d.blog;
+const posts = await getPosts(lang);
+const rss = localePath(lang, '/blog/rss.xml').replace(/\/$/, '');
+
+const graph = [
+  {
+    '@type': 'Blog',
+    '@id': `${new URL(localePath(lang, '/blog/'), site.url).href}#blog`,
+    name: b.meta.title,
+    description: b.meta.description,
+    inLanguage: lang,
+    publisher: { '@id': `${site.url}/#sakala` },
+    blogPost: posts
+      .filter((p) => !p.data.draft)
+      .map((p) => ({ '@type': 'BlogPosting', headline: p.data.title, url: new URL(postPath(p), site.url).href, datePublished: p.data.date.toISOString() })),
+  },
+];
+---
+
+<Base {lang} path="/blog/" page="blog" title={b.meta.title} description={b.meta.description} breadcrumb={d.nav.blog} {graph}>
+  <section class="relative overflow-hidden pb-10 pt-32 sm:pt-40">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_50%_at_40%_0%,rgb(8_61_58/0.6),transparent)]" aria-hidden="true"></div>
+    <div class="container-page">
+      <SectionHeading {lang} as="h1" eyebrow={b.eyebrow} title={b.title} lead={b.lead} />
+      <a href={rss} class="mt-6 inline-flex items-center gap-2 text-sm text-mint hover:underline">
+        <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true"><path d="M5 19a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM3 10.5v-3A13.5 13.5 0 0 1 16.5 21h-3A10.5 10.5 0 0 0 3 10.5Zm0-6v-3A19.5 19.5 0 0 1 22.5 21h-3A16.5 16.5 0 0 0 3 4.5Z"></path></svg>
+        {b.rss}
+      </a>
+    </div>
+  </section>
+
+  <section class="pb-28">
+    <div class="container-page">
+      {
+        posts.length === 0 ? (
+          <p class="card max-w-2xl p-6 text-muted">{b.empty}</p>
+        ) : (
+          <ol class="grid gap-5 md:grid-cols-2">
+            {posts.map((p, i) => (
+              <li class:list={[i === 0 && 'md:col-span-2']}>
+                <a href={postPath(p)} class="card group flex h-full flex-col p-6 transition-colors hover:border-mint/35 sm:p-8">
+                  <p class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-dim">
+                    <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, lang)}</time>
+                    <span aria-hidden="true">·</span>
+                    <span>
+                      {readingMinutes(p.body)} {b.minutes}
+                    </span>
+                    {p.data.series && (
+                      <span class="text-mint/80">
+                        {p.data.series.name} #{p.data.series.part}
+                      </span>
+                    )}
+                    {p.data.draft && <span class="rounded-full bg-caution/15 px-2 py-0.5 text-caution">{b.draft}</span>}
+                  </p>
+                  <h2 class:list={['mt-3 font-bold transition-colors group-hover:text-mint', i === 0 ? 'text-2xl sm:text-4xl' : 'text-xl sm:text-2xl']}>{p.data.title}</h2>
+                  <p class="mt-3 flex-1 text-muted">{p.data.description}</p>
+                  <span class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-mint">
+                    {b.readMore} <Icon name="arrow" class="size-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+    </div>
+  </section>
+</Base>

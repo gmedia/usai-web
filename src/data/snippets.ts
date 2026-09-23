@@ -86,14 +86,19 @@ export const count = http.get("/count", async () => {
   return { ok: true };
 });`,
 
-  antiPatternError: `HTTP work ended with live asynchronous work.
+  // Real runtime output (crates/usai-runtime/src/world.rs, LifecycleViolation::detached_work).
+  antiPatternError: `WARN http work \`POST /orders\` ended with live asynchronous work (1 timer).
 
-The request no longer owns execution after the response completes.
+The http lifetime ended when its result was produced. Work that is
+still pending cannot remain owned by this world, so it was cancelled.
 
 Use:
-- task() for independent finite work
-- cron() for scheduled work
-- service() for intentional long-running work`,
+  task()    for independent finite work
+            (await ctx.tasks.dispatch(task, input): the hand-off is
+             awaited, the work runs on its own)
+  cron()    for scheduled work
+  service() for intentional long-running work
+or await the work before returning.`,
 
   fix: `export const order = http.post("/orders", { body: Order }, async (ctx) => {
   await ctx.tasks.dispatch(sendEmail, { orderId: ctx.body.id });   // owned by a task now

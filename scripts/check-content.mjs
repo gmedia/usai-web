@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Guards the claims and brand rules (AGENTS.md → Copy & claims) on every
- * piece of copy the site ships: src/i18n/*.ts, src/data/*.ts and the built
+ * piece of copy the site ships: src/i18n/*.ts, src/data/*.ts, blog posts and the built
  * HTML when dist/ exists. Fails CI when a forbidden phrase appears.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -47,6 +47,7 @@ const walk = (dir, exts) => {
 };
 walk(join(root, 'src/i18n'), ['.ts']);
 walk(join(root, 'src/data'), ['.ts']);
+walk(join(root, 'src/content'), ['.md', '.mdx']);
 walk(join(root, 'src/components'), ['.astro', '.tsx']);
 walk(join(root, 'src/views'), ['.astro']);
 walk(join(root, 'dist'), ['.html', '.txt']);

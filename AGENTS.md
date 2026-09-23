@@ -8,7 +8,8 @@ Read order for a new session:
 2. `docs/ARCHITECTURE.md`: how the site is put together;
 3. `docs/CONTENT-RULES.md`: what the site may and may not say;
 4. `docs/I18N.md`: before touching copy;
-5. `docs/DATA-SOURCES.md`: before touching a number.
+5. `docs/DATA-SOURCES.md`: before touching a number;
+6. `docs/PUBLISHING.md`: before writing a blog post.
 
 ---
 
@@ -43,7 +44,8 @@ When an agent starts the dev server, it runs in background mode: `astro dev --ba
 src/
   config/site.ts         URLs and facts repeated across the site (version, repo links, sources)
   data/benchmarks.ts     every number, copied verbatim from gmedia/usai docs/measurements
-  data/snippets.ts       code shown on the site (from the usai README, examples, GUIDE)
+  data/snippets.ts       code shown on the site (from the usai README, examples, GUIDE, runtime source)
+  content/blog/<lang>/   blog posts (Markdown); schema + evidence box in src/content.config.ts
   i18n/en.ts             English copy, the source of truth for shape (Dict)
   i18n/id.ts             Bahasa Indonesia, same shape (TypeScript enforces it)
   i18n/index.ts          locales, localePath(), parseRich() ([[term]] **bold** `code`)
@@ -53,7 +55,8 @@ src/
   components/islands/    React islands: CounterProbe, BenchmarkChart
   views/                 one view per page, rendered for each locale
   pages/                 thin wrappers: /x.astro → <View lang="en">, /id/x.astro → <View lang="id">
-  pages/og/[slug].png.ts build-time Open Graph images (satori + resvg)
+  pages/blog/, pages/id/blog/  blog index, posts ([slug].astro), rss.xml.ts
+  pages/og/[slug].png.ts build-time Open Graph images (satori + resvg), one per page and post
   pages/llms.txt.ts, robots.txt.ts, manifest.webmanifest.ts
   scripts/               motion.ts (Lenis + IO reveals), hero-scene.ts (WebGL), ui.ts (copy, tabs)
   styles/global.css      Tailwind v4 @theme brand tokens + base components
@@ -80,6 +83,8 @@ These rules come from the runtime repository (`AGENTS.md` §6, ADR-0008, `docs/b
 - Keep engine internals out of the main copy: Wasmtime, Wizer, copy-on-write pages, R1/R2/R3. The model is the message. The substrate is an implementation detail that may change.
 - Governance: Usai is maintained by the **Sakala maintainers**; gmedia is a **sponsor, not the author**. Nothing on the site speaks in gmedia's name.
 - Voice: **precise, honest, calm, technical**. No hype, no exclamation marks, no "revolutionary".
+- Blog posts carry an **evidence box** (status, setup, supports, does not support, sources). A claim that is not in `supports` does not belong in the post. See `docs/PUBLISHING.md`.
+- Runtime output shown on the site (error messages, CLI banners) is quoted from the runtime source or a real log, never from design documents.
 
 ## 5. Hard words must be solved on the page
 
