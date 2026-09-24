@@ -32,50 +32,65 @@ const isIn = (slug: string, section?: string) => current === slug || (!!section 
     aria-current={!current ? 'page' : undefined}>{d.overview}</a
   >
   {
-    docsNav.map((group) => (
-      <div class="mb-6">
-        <p class="mb-2 px-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-dim">{d.groups[group.key]}</p>
+    docsNav.map((group) => {
+      const items = group.items.filter((i) => i.href || titleOf.has(i.slug));
+      const groupOpen = !group.collapsed || items.some((i) => isIn(i.slug, i.section));
+      const list = (
         <ul class="space-y-0.5">
-          {group.items
-            .filter((i) => titleOf.has(i.slug))
-            .map((item) => {
-              const open = isIn(item.slug, item.section);
-              return (
-                <li>
-                  <a
-                    href={`/docs/${item.slug}/`}
-                    class:list={[
-                      'block rounded-lg px-3 py-1.5 transition-colors',
-                      current === item.slug ? 'bg-mint/10 font-medium text-paper' : open ? 'text-paper' : 'text-muted hover:text-paper',
-                    ]}
-                    aria-current={current === item.slug ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </a>
-                  {open && item.section && (
-                    <ul class="my-1 ml-3 space-y-0.5 border-l border-line pl-2">
-                      {childrenOf(item.section).map((c) => (
-                        <li>
-                          <a
-                            href={`/docs/${c.slug}/`}
-                            class:list={[
-                              'block truncate rounded-md px-2 py-1 text-[0.8rem] transition-colors',
-                              current === c.slug || current?.startsWith(`${c.slug}/`) ? 'bg-white/5 text-paper' : 'text-dim hover:text-paper',
-                            ]}
-                            title={c.label}
-                            aria-current={current === c.slug ? 'page' : undefined}
-                          >
-                            {c.label}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
+          {items.map((item) => {
+            const open = isIn(item.slug, item.section);
+            const url = item.href ? localePath(lang, item.href) : `/docs/${item.slug}/`;
+            return (
+              <li>
+                <a
+                  href={url}
+                  class:list={[
+                    'block rounded-lg px-3 py-1.5 transition-colors',
+                    current === item.slug ? 'bg-mint/10 font-medium text-paper' : open ? 'text-paper' : 'text-muted hover:text-paper',
+                  ]}
+                  aria-current={current === item.slug ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+                {open && item.section && (
+                  <ul class="my-1 ml-3 space-y-0.5 border-l border-line pl-2">
+                    {childrenOf(item.section).map((c) => (
+                      <li>
+                        <a
+                          href={`/docs/${c.slug}/`}
+                          class:list={[
+                            'block truncate rounded-md px-2 py-1 text-[0.8rem] transition-colors',
+                            current === c.slug || current?.startsWith(`${c.slug}/`) ? 'bg-white/5 text-paper' : 'text-dim hover:text-paper',
+                          ]}
+                          title={c.label}
+                          aria-current={current === c.slug ? 'page' : undefined}
+                        >
+                          {c.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ul>
-      </div>
-    ))
+      );
+      return group.collapsed ? (
+        <details class="group mb-6 rounded-xl border border-line" open={groupOpen}>
+          <summary class="flex cursor-pointer list-none items-center justify-between px-3 py-2 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-dim hover:text-muted">
+            {d.groups[group.key]}
+            <span class="transition-transform group-open:rotate-90" aria-hidden="true">›</span>
+          </summary>
+          <p class="px-3 pb-2 text-[0.7rem] leading-snug text-dim">{d.maintainersHint}</p>
+          <div class="pb-2">{list}</div>
+        </details>
+      ) : (
+        <div class="mb-6">
+          <p class="mb-2 px-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-dim">{d.groups[group.key]}</p>
+          {list}
+        </div>
+      );
+    })
   }
 </nav>

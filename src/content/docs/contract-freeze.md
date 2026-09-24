@@ -35,15 +35,15 @@ Once 1.0 ships, within `1.x`:
 | **Helpers** — `errors`, `cookies`, `tokens`, `bytes`, `multipart`, `password`, `env` | same | Stable; `tokens` added 0.0.6 | Signatures and, for `errors`, the code→status mapping |
 | **The test harness** — `usai/test`: `testApp`, `app.http/task/queue/command`, `app.logs`, `app.waitForLog`, `app.stream`, `app.socket`, `res.violations` | `packages/usai/src/test.ts` | Stable since 0.0.6 | Test files are user code: breaking this breaks their CI |
 | **The error envelope** — `{ error: { code, message, details? } }` and the runtime's code list | `http/pipeline.rs`, OpenAPI | Stable; `internal` sanitization is part of it | Every code a client can branch on. Adding codes is allowed if they are declared |
-| **HTTP semantics** — validation before the world, 400/401/404/405/413/415/426/499/503/504, `Allow`, `x-request-id`, catch-alls, route precedence | GUIDE §4 | Stable since 0.0.6 | Status codes for the cases above, and the order of the checks |
+| **HTTP semantics** — validation before the world, 400/401/404/405/413/415/426/499/503/504, `Allow`, `x-request-id`, catch-alls, route precedence | [GUIDE §4](/docs/guide/#4-http) | Stable since 0.0.6 | Status codes for the cases above, and the order of the checks |
 | **The artifact** — `manifest.json` + `app.js` + `migrations/`, and `signature.json` when signed | ADR-0005, ADR-0020 | Format version in the manifest; CI tests N/N−1 both ways plus the SDK axis (0.0.8) | That a `1.x` artifact loads on every later `1.y` |
 | **`GUEST_ABI`** | `definition.rs`, `manifest.ts` | 1 since 0.0.1; ADR-0018 kept it at 1 | A bump refuses old artifacts loudly — allowed in a major, or in a minor only if the old ABI keeps working |
 | **The CLI** — `dev`, `build`, `run`, `inspect`, `graph`, `test`, `app`, `task`, `cron`, `queue`, `db`, `generate`, `config`, `keygen`, `probe`, `bench` and their flags | `crates/usai-cli` | Verbs stable; `queue status/prune/prepare` added 0.0.9 | Flag names and their meanings; scripts and Dockerfiles depend on them |
 | **Environment** — every `USAI_*` | [`docs/ENVIRONMENT.md`](/docs/environment/) | Stable | Names and accepted values (the boolean forms were fixed in 0.0.5) |
 | **Operator surfaces** — `/_usai/status`, `/_usai/metrics`, `/_usai/live`, `/_usai/ready`, `/_usai/docs`, `/_usai/openapi.json` | `http/`, `observability.rs` | Status JSON and metric names stable; `usai_workload_cpu_seconds_total` added 0.0.9 | Metric names and labels (a dashboard is a contract), and the status document's field names |
 | **The control API** | [`docs/CONTROL-API.md`](/docs/control-api/) | Stable since 0.0.6 | Paths, bodies, status codes — an orchestrator depends on them |
-| **The database** — `usai_migrations`, `usai_queue`, `usai_cron_ticks` | GUIDE §7 | `usai_queue` gained `request_id` and two indexes in 0.0.6; tooling in 0.0.9 | Column names an operator queries, and that a new version brings the schema forward without a manual step |
-| **Log lines** | GUIDE §14 | **Moving**: `--log-format json` became one object per line with `fields` as an object in 0.0.9 | Only once the shape settles. A shipper's pipeline is a contract too |
+| **The database** — `usai_migrations`, `usai_queue`, `usai_cron_ticks` | [GUIDE §7](/docs/guide/#7-postgresql) | `usai_queue` gained `request_id` and two indexes in 0.0.6; tooling in 0.0.9 | Column names an operator queries, and that a new version brings the schema forward without a manual step |
+| **Log lines** | [GUIDE §14](/docs/guide/#14-operate) | **Moving**: `--log-format json` became one object per line with `fields` as an object in 0.0.9 | Only once the shape settles. A shipper's pipeline is a contract too |
 
 ## What is still moving, and would have to settle first
 

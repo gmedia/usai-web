@@ -15,7 +15,7 @@ declares) are not here: they are the application's, listed by `usai
 inspect` under *Environment* and by `/_usai/docs`, and validated at
 activation (`missing required environment` refuses the revision, never a
 request). `usai run` reads them from the process environment only; `.env`
-files are for `usai dev` ([`GUIDE.md`](/docs/guide/) §13).
+files are for `usai dev` ([`GUIDE.md` §13](/docs/guide/#13-configuration-and-environment)).
 
 Every operating variable has a flag of the same meaning (`--max-worlds` ↔
 `USAI_MAX_WORLDS`); the flag wins when both are set. Prefer the variable
@@ -34,7 +34,7 @@ for secrets — a flag shows in `ps`. Boolean variables are on for `1`,
 | `USAI_READY_REQUIRES_RESOURCES` | — | `1` | Whether a bound resource failing its probe makes `/_usai/ready` answer 503. A proxy removes an unready upstream, so with the default a shared database outage takes every route out on every replica, including routes that never touch it; `0` keeps them serving and reports the failing resource in the body instead. Draining fails readiness either way. See [`docs/runbooks/postgres-down.md`](/docs/runbooks/postgres-down/). |
 | `USAI_SURFACES_OFF` | `--surfaces-off` | unset | Comma-separated surfaces to switch off on both listeners (a 404): `status`, `metrics`, `docs` (reference + OpenAPI), `live`, `ready`. `docs,metrics` when neither is consumed. |
 | `USAI_CONTROL_TOKEN` | — | unset | Bearer token for the control surface (`--control <addr>`, [`CONTROL-API.md`](/docs/control-api/)). Required when the control address is not loopback; the runtime refuses to bind otherwise. Read at start. |
-| `USAI_REQUIRE_SIGNATURE` | `--require-signature` | unset | Ed25519 public keys (hex, comma-separated, or a file with one per line); an artifact not signed by one of them is refused at install ([`GUIDE.md`](/docs/guide/) §14, "Signed artifacts"). |
+| `USAI_REQUIRE_SIGNATURE` | `--require-signature` | unset | Ed25519 public keys (hex, comma-separated, or a file with one per line); an artifact not signed by one of them is refused at install ([`GUIDE.md` §14](/docs/guide/#14-operate), "Signed artifacts"). |
 | `USAI_SIGNING_KEY` | `usai build --sign` | unset | The private key `usai build` signs the artifact with (`usai keygen`). Build side only. |
 | `USAI_NO_CRON` | `--no-cron` | off | Do not run the cron scheduler here. Every instance that schedules ticks every non-`exclusive` schedule: with several replicas, set it on all but one ([`SUPPORTED.md`](/docs/supported/), topology). |
 | `USAI_NO_QUEUE` | `--no-queue` | off | Do not run queue consumers here. Consumers on several replicas share the work safely; this dedicates replicas, it is not needed for correctness. |

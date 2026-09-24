@@ -17,6 +17,27 @@ export const hello = http.get("/hello/:name", { params: Params, response: Greeti
 
 export default defineApp({ name: "hello", workloads: [hello] });`,
 
+  // The hello example with markers for the line-by-line notes on /docs/start/.
+  helloAnnotated: `import { defineApp, http, errors } from "@sakaladev/usai";
+import { z } from "zod";
+
+// ①
+const Params = z.object({ name: z.string().min(1).max(40) });
+const Greeting = z.object({ hello: z.string() });
+
+export const hello = http.get("/hello/:name",
+  // ②
+  { params: Params, response: Greeting },
+  // ③
+  async (ctx) => {
+    // ④
+    if (ctx.params.name === "nobody") throw errors.notFound("nobody is not here");
+    return { hello: ctx.params.name };
+  });
+
+// ⑤
+export default defineApp({ name: "hello", workloads: [hello] });`,
+
   tasks: `export const order = http.post("/orders", { body: Order }, async (ctx) => {
   // owned: this request waits for it
   const total = await ctx.tasks.invoke(priceOrder, ctx.body);

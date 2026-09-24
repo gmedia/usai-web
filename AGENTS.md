@@ -49,7 +49,7 @@ src/
   content/blog/<lang>/   blog posts (Markdown); schema + evidence box in src/content.config.ts
   content/docs/          GENERATED: gmedia/usai docs at a release tag (scripts/sync-docs.mjs) — never edit
   data/docs-source.json  which tag/commit the docs (and the site's version) come from
-  data/docs-nav.ts       the /docs sidebar
+  data/docs-nav.ts       the /docs sidebar, grouped by reader (maintainer docs collapsed), with a one-line blurb per page (EN/ID)
   i18n/en.ts             English copy, the source of truth for shape (Dict)
   i18n/id.ts             Bahasa Indonesia, same shape (TypeScript enforces it)
   i18n/index.ts          locales, localePath(), parseRich() ([[term]] **bold** `code`)

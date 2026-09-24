@@ -168,7 +168,7 @@ this file when an item moves.
 | API docs from runtime truth | ✓ | D8 |
 | lifecycle integration tests green | ✓ | 121 Rust test functions across the integration suites (http 30, postgres 24, lifecycle 18, workloads 11, hardening 7, connection 7, plus the CLI's) and 30 TS cases in 7 files; the wasm engine everywhere, the reference engine on lifecycle and http |
 | observability sufficient to debug failures | ✓ | D12 |
-| docs let a new developer build a real application | ✓ | [`docs/GUIDE.md`](/docs/guide/) §16 walks `examples/todos` (modules, migrations, seeders, typed env, HTTP CRUD, dispatched task, cron, command, tests); the example's test runs in CI |
+| docs let a new developer build a real application | ✓ | [`docs/GUIDE.md` §16](/docs/guide/#16-a-realistic-application-examplestodos) walks `examples/todos` (modules, migrations, seeders, typed env, HTTP CRUD, dispatched task, cron, command, tests); the example's test runs in CI |
 | published packages / binaries | ✓ | `v0.0.1` release with binaries for 3 targets; `@sakaladev/usai@0.0.1`, `@sakaladev/create-usai@0.0.5` on npm via Trusted Publishing; verified from a clean directory: `pnpm dlx @sakaladev/create-usai` → `pnpm install` → released `usai build` |
 
 ## P3.5 — Distribution (roadmap phase, not a GOAL.md milestone)

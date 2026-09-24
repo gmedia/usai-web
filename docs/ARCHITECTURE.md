@@ -76,5 +76,7 @@ pagefind --site dist      static search index over [data-pagefind-body] (docs on
 ```
 
 - Docs are English only. `/id/docs/` is an Indonesian index that explains this and links the glossary.
+- **Readability layer, written on this site (EN + ID):** `/docs/start/` ("Start here": install, the first endpoint line by line, five ideas, common surprises, all linking into guide sections), a one-line "what this page is for" blurb per page (`data/docs-nav.ts`), reader paths on the index (build / operate / evaluate), and a collapsed "For maintainers" group whose pages carry a banner pointing new readers to Start here.
+- The sync turns the guide's `§N` and other docs' `GUIDE §N` references into links to the section anchors.
 - `.github/workflows/sync-docs.yml` checks for a new release every six hours and opens a PR with the re-synced docs. Numbers quoted elsewhere on the site are still reviewed by hand (AGENTS.md §11).
 - `scripts/check-links.mjs` fails CI when any internal link or `#anchor` in `dist/` does not resolve. Heading ids match GitHub's, so upstream anchors keep working.

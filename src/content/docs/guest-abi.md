@@ -70,7 +70,7 @@ For HTTP the input JSON's `request` carries `validated`: the slot names
 (`params`, `query`, `headers`, `body`) the host checked against their JSON
 Schema before the world existed. The SDK skips its own parse for a listed
 slot only when the manifest proved the schema final (`contracts.boundaryFinal`),
-and even then re-runs the library's own checks ([`docs/GUIDE.md`](/docs/guide/) §4).
+and even then re-runs the library's own checks ([`docs/GUIDE.md` §4](/docs/guide/#4-http)).
 
 `invoke(index, inputJson)` and `outcome()` remain as the functions `entry`
 and `state` compose. The host calls these only when the guest is idle (never

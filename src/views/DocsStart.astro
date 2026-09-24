@@ -1,0 +1,141 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import DocsSidebar from '../components/docs/DocsSidebar.astro';
+import CopyCommand from '../components/CopyCommand.astro';
+import CodeWindow from '../components/CodeWindow.astro';
+import Rich from '../components/Rich.astro';
+import Icon from '../components/Icon.astro';
+import { t, localePath, type Lang } from '../i18n';
+import { snippets } from '../data/snippets';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang);
+const s = d.docsStart;
+/** Docs pages are English-only at /docs; everything else is localised. */
+const href = (h: string) => (h.startsWith('/docs/') ? h : localePath(lang, h));
+const marks = ['①', '②', '③', '④', '⑤'];
+---
+
+<Base {lang} path="/docs/start/" page="docs" title={s.meta.title} description={s.meta.description} breadcrumb={d.docs.eyebrow}>
+  <div class="container-page pb-24 pt-28 sm:pt-36">
+    <div class="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 max-h-[calc(100dvh-7rem)] overflow-y-auto pb-8 pr-2" data-lenis-prevent>
+          <DocsSidebar {lang} current="start" />
+        </div>
+      </aside>
+
+      <div class="min-w-0 max-w-3xl">
+        <SectionHeading {lang} as="h1" eyebrow={s.eyebrow} title={s.title} lead={s.lead} />
+
+        <section class="mt-14" aria-labelledby="one-minute">
+          <h2 id="one-minute" class="text-2xl font-bold sm:text-3xl">{s.oneMinuteTitle}</h2>
+          <ol class="mt-6 space-y-3">
+            {
+              s.oneMinute.map((line, i) => (
+                <li class="card flex gap-4 p-4">
+                  <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-mint/15 font-mono text-xs text-mint">{i + 1}</span>
+                  <p class="text-fog/90"><Rich text={line} {lang} /></p>
+                </li>
+              ))
+            }
+          </ol>
+          <a href={localePath(lang, '/#how')} class="link mt-4 inline-block text-sm">{d.nav.how} →</a>
+        </section>
+
+        <section class="mt-16" aria-labelledby="install">
+          <h2 id="install" class="text-2xl font-bold sm:text-3xl">{s.installTitle}</h2>
+          <p class="mt-4 text-muted"><Rich text={s.installNeeds} {lang} /></p>
+          <ol class="mt-6 space-y-5">
+            {
+              s.installSteps.map((step, i) => (
+                <li>
+                  <p class="mb-2 flex items-center gap-2 text-sm font-semibold text-paper">
+                    <span class="flex size-6 items-center justify-center rounded-full bg-mint/15 font-mono text-xs text-mint">{i + 1}</span>
+                    {step.title}
+                  </p>
+                  <CopyCommand cmd={step.cmd} {lang} />
+                </li>
+              ))
+            }
+          </ol>
+          <p class="mt-5 text-sm text-dim"><Rich text={s.installDocker} {lang} /></p>
+        </section>
+
+        <section class="mt-16" aria-labelledby="first">
+          <h2 id="first" class="text-2xl font-bold sm:text-3xl">{s.firstTitle}</h2>
+          <CodeWindow class="mt-6" code={snippets.helloAnnotated} title="src/app.ts" />
+          <ol class="mt-6 space-y-3">
+            {
+              s.firstNotes.map((note, i) => (
+                <li class="flex gap-3">
+                  <span class="w-6 shrink-0 font-mono text-lg leading-6 text-mint" aria-hidden="true">{marks[i]}</span>
+                  <p class="text-muted"><Rich text={note.text} {lang} /></p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="mt-16" aria-labelledby="ideas">
+          <h2 id="ideas" class="text-2xl font-bold sm:text-3xl">{s.ideasTitle}</h2>
+          <ol class="mt-6 grid gap-4">
+            {
+              s.ideas.map((idea, i) => (
+                <li class="card p-5 sm:p-6">
+                  <p class="font-mono text-xs text-mint">{String(i + 1).padStart(2, '0')}</p>
+                  <h3 class="mt-1 text-lg font-bold">{idea.title}</h3>
+                  <p class="mt-2 text-sm leading-relaxed text-muted"><Rich text={idea.body} {lang} /></p>
+                  <a href={idea.href} class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-mint hover:underline">
+                    {s.readMore}: {idea.link} <Icon name="arrow" class="size-4" />
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="mt-16" aria-labelledby="surprises">
+          <h2 id="surprises" class="text-2xl font-bold sm:text-3xl">{s.surprisesTitle}</h2>
+          <div class="mt-6 divide-y divide-line overflow-hidden rounded-2xl border border-line">
+            {
+              s.surprises.map((item) => (
+                <details class="group p-5 open:bg-white/[0.02]">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-heading font-semibold text-paper">
+                    {item.q}
+                    <span class="text-mint transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  </summary>
+                  <p class="mt-3 text-sm leading-relaxed text-muted"><Rich text={item.a} {lang} /></p>
+                  <a href={item.href} class="mt-3 inline-flex items-center gap-1 text-sm text-mint hover:underline">
+                    {s.readMore} <Icon name="arrow" class="size-4" />
+                  </a>
+                </details>
+              ))
+            }
+          </div>
+        </section>
+
+        <section class="mt-16" aria-labelledby="next">
+          <h2 id="next" class="text-2xl font-bold sm:text-3xl">{s.nextTitle}</h2>
+          <ul class="mt-6 grid gap-4 sm:grid-cols-3">
+            {
+              s.next.map((n) => (
+                <li>
+                  <a href={href(n.href)} class="card group flex h-full flex-col p-5 transition-colors hover:border-mint/35">
+                    <p class="font-heading font-semibold text-paper group-hover:text-mint">{n.title}</p>
+                    <p class="mt-1 text-sm text-muted">{n.body}</p>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</Base>

@@ -118,6 +118,36 @@ function linkInlineRefs(line, fromFile) {
   });
 }
 
+/** GitHub-style heading slug (matches the ids Astro renders). */
+const slugify = (text) =>
+  text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .trim()
+    .replace(/\s/g, '-');
+
+// The guide refers to its own sections as "§4"; map numbers to heading anchors.
+const guideSections = new Map();
+{
+  const guideSrc = existsSync(join(tmp, 'docs/GUIDE.md')) ? readFileSync(join(tmp, 'docs/GUIDE.md'), 'utf8') : '';
+  for (const m of guideSrc.matchAll(/^## (\d+)\.\s+(.+)$/gm)) guideSections.set(m[1], slugify(`${m[1]}. ${m[2]}`));
+}
+/** Apply `fn` only outside inline code spans. */
+const outsideCode = (line, fn) => line.split(/(`[^`]*`)/).map((part, i) => (i % 2 ? part : fn(part))).join('');
+
+function linkGuideSections(line, file) {
+  if (!guideSections.size) return line;
+  // "[`docs/GUIDE.md`](/docs/guide/) §16" -> one link to the section
+  line = line.replace(/\[([^\]]*GUIDE(?:\.md)?[^\]]*)\]\(\/docs\/guide\/\) §(\d+)/g, (m, label, n) =>
+    guideSections.has(n) ? `[${label} §${n}](/docs/guide/#${guideSections.get(n)})` : m,
+  );
+  return outsideCode(line, (text) =>
+    file === 'docs/GUIDE.md'
+      ? text.replace(/(?<![\[\w])§(\d+)(?![\d\]])/g, (m, n) => (guideSections.has(n) ? `[§${n}](#${guideSections.get(n)})` : m))
+      : text.replace(/\bGUIDE §(\d+)/g, (m, n) => (guideSections.has(n) ? `[GUIDE §${n}](/docs/guide/#${guideSections.get(n)})` : m)),
+  );
+}
+
 // 3. Write each file with frontmatter and rewritten links.
 rmSync(OUT, { recursive: true, force: true });
 let count = 0;
@@ -138,6 +168,7 @@ for (const file of files) {
         .replace(/\]\(([^)\s]+)(\s+"[^"]*")?\)/g, (_m, t, titlePart = '') => `](${resolveLink(file, t)}${titlePart})`)
         .replace(/\b(href|src)="([^"]+)"/g, (_m, attr, t) => `${attr}="${resolveLink(file, t)}"`);
       out = linkInlineRefs(out, file);
+      out = linkGuideSections(out, file);
       return out;
     })
     .join('\n');

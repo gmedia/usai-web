@@ -84,7 +84,7 @@ default. The world is gone, its operations released, and the client has a
   and the resource's own metrics show where the time went. Raising the
   deadline hides it and raises the memory the concurrent worlds hold.
 - **Computing** — the CPU slice interrupted a synchronous loop. The
-  interpreter is slower than a JIT (GUIDE §18); move the loop to the
+  interpreter is slower than a JIT ([GUIDE §18](/docs/guide/#18-performance-note-v0)); move the loop to the
   database, or split the work into a task.
 
 A deadline is a promise to the caller, not a limit on the machine: the right

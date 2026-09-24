@@ -405,13 +405,13 @@ edge, or ignore it — the hand-off is unaffected.
 
 ### Documentation and examples
 
-- GUIDE §3 states the rule nobody could find — **a workload exists because
+- [GUIDE §3](/docs/guide/#3-project-layout) states the rule nobody could find — **a workload exists because
   `defineApp` can reach it through an `import`; the runtime never scans your
   files** — and shows both an Express-style file layout and the
   routes/service/queries layering, with the one rule the runtime adds: a
   repository takes its `SqlExecutor` as an argument, so the same function works
   on the handle and inside a transaction.
-- GUIDE §7 gains **"Query builders, and what you can npm-install"**: the rule
+- [GUIDE §7](/docs/guide/#7-postgresql) gains **"Query builders, and what you can npm-install"**: the rule
   that decides every package (a library that only computes is fine; one that
   imports a Node built-in at load time is not), kysely's `DummyDriver` and
   drizzle's `QueryBuilder` used as compilers — both served real rows through
@@ -532,7 +532,7 @@ two-replica campaign and the 72 h soak all passed (73.6 M requests, 0 × 5xx,
   `Sec-WebSocket-Protocol: bearer`. A 101 is counted as an upgrade, not a 5xx;
   `upgrades` and `streams` counters move.
 - **PostgreSQL**: a `bigint` beyond ±2^53 comes back as a string (a JSON number would
-  round it); GUIDE §7 lists what the driver covers and what it does not (COPY,
+  round it); [GUIDE §7](/docs/guide/#7-postgresql) lists what the driver covers and what it does not (COPY,
   LISTEN/NOTIFY, session state).
 - **Uploads and headers**: `multipart.parse(bytes, contentType)` splits a form body into
   fields and files; `defineApp({ headers })` sets static response headers on every
@@ -781,7 +781,7 @@ two-replica campaign and the 72 h soak all passed (73.6 M requests, 0 × 5xx,
   object storage; no multipart parser), binary columns (hex), the default
   30 s deadline and `504 deadline_exceeded`, and what the proxy owns — CORS,
   security headers, static files, the access log — with one Caddy block.
-- GUIDE §4/§9: cookies in the browser (Secure on localhost and Safari,
+- [GUIDE §4](/docs/guide/#4-http)/§9: cookies in the browser (Secure on localhost and Safari,
   SameSite as the CSRF posture, `EventSource`/`WebSocket` and cookies), CORS
   in development (the dev server's proxy, or `http.options` +
   `defineApp({ headers })`), declare `errors` rather than error schemas,
@@ -912,7 +912,7 @@ stop at; the details are below.
   The `ALTER` is metadata only (a brief `ACCESS EXCLUSIVE` lock). **The two
   indexes are new in 0.0.6 and build under a `SHARE` lock: publishes and
   claims on that table block while they do.** The runtime never prunes
-  `done`/`dead` rows ([`GUIDE.md`](/docs/guide/) §8), so on a long-lived deployment this can
+  `done`/`dead` rows ([`GUIDE.md` §8](/docs/guide/#8-queue)), so on a long-lived deployment this can
   be minutes at the moment the first upgraded replica starts. Run the three
   statements yourself beforehand — with `CREATE INDEX CONCURRENTLY IF NOT
   EXISTS`, after deleting the rows you no longer need — and the runtime will
