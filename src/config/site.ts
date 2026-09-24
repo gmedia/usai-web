@@ -61,6 +61,7 @@ export const sources = {
   reliability: docsPath('measurements/2026-09-18-p5-p6-qualification'),
   fuzzing: docsPath('measurements/2026-09-20-fuzzing'),
   threat: docsPath('measurements/2026-09-23-threat-verification'),
+  boundedSoak: docsPath('measurements/2026-09-24-bounded-soak'),
   status: docsPath('status'),
   supported: docsPath('supported'),
   researchReference: docsPath('research-reference'),

@@ -234,7 +234,7 @@ export const id: Dict = {
         { value: '1.000', label: 'penggantian revisi saat live', note: '2,04 jt request di bawah beban, 0 error', source: 'reliability' },
         { value: '0 × 502', label: 'selama rolling restart', note: 'dua replika di belakang satu proxy, di bawah beban', source: 'reliability' },
         { value: '78 jt', label: 'eksekusi fuzzing', note: 'di tiga target pertama, 0 crash; dua target ditambahkan sesudahnya', source: 'fuzzing' },
-        { value: '39 / 39', label: 'probe threat model lolos', note: 'diverifikasi, bukan sekadar diklaim — bagian dari gerbang rilis', source: 'threat' },
+        { value: '42 / 42', label: 'probe threat model lolos', note: 'diverifikasi, bukan sekadar diklaim — bagian dari gerbang rilis', source: 'threat' },
       ],
       chartTitle: 'Throughput, enam kelas workload',
       chartLead: 'Request per detik, kontrak sama, mesin sama. Pilih kelas dan level [[concurrency|concurrency]].',
@@ -252,7 +252,7 @@ export const id: Dict = {
       good: [
         { title: 'Kamu ingin umur seukuran request di server sendiri', body: 'Mental model serverless — pekerjaan datang, dijalankan, selesai — tapi di VPS, di Docker, di samping PostgreSQL biasa, lengkap dengan pool, cron, queue, dan WebSocket.' },
         { title: 'Traffic-mu kebanyakan sepi, lalu burst', body: 'API billing, webhook, backend admin, tools internal, SaaS kecil. CPU idle yang nyaris nol dan respons dingin yang cepat lebih penting daripada CPU di jalur panas.' },
-        { title: 'Konteks yang bocor antar-request akan merugikan', body: 'Backend multi-tenant, di mana `currentTenant` yang nyasar di scope module adalah insiden nyata. World baru per request adalah kebersihan lifecycle — bukan batas keamanan.' },
+        { title: 'Konteks yang bocor antar-request akan merugikan', body: 'Backend multi-tenant, di mana `currentTenant` yang nyasar di scope module adalah insiden nyata. World baru per request adalah kebersihan lifecycle — bukan batas keamanan.', href: '/docs/guide/#multi-tenancy', link: 'Multi-tenancy di panduan' },
         { title: 'Kamu menjalankan lebih dari HTTP', body: 'Task, cron, queue consumer, stream, socket, dan service — masing-masing dengan umur yang dideklarasikan, bukan satu model proses untuk semuanya.' },
         { title: 'Kamu memulai sesuatu yang baru', body: 'Layanan greenfield tidak menanggung biaya migrasi. Usai masih muda; lebih mudah diadopsi untuk worker webhook baru daripada monolith 400 ribu baris.' },
       ],
@@ -426,7 +426,7 @@ export const id: Dict = {
     reliabilityTitle: 'Keandalan',
     reliability: [
       { value: '72 jam', label: 'soak: 73,6 jt request, 0 × 5xx, memori datar' },
-      { value: '24 jam', label: 'soak: 35,0 jt request, 0 error' },
+      { value: '24 jam', label: 'soak bounded: 124,5 jt request, 0 × 5xx, throughput stabil (1.416 → 1.480 req/dtk)' },
       { value: '1.000', label: 'penggantian revisi di bawah beban, 0 error' },
       { value: '0 × 502', label: 'rolling restart dengan dua replika' },
     ],
@@ -823,7 +823,7 @@ export const id: Dict = {
         group: 'measure',
         short: 'Menjalankan beban stabil dalam waktu lama untuk menangkap kebocoran pelan.',
         analogy: 'Membiarkan perahu di air berhari-hari untuk mencari rembesan kecil.',
-        detail: 'Yang terpanjang di Usai: 72 jam, 73,6 jt request, 0 × 5xx, memori datar dari 51,5 ke 53,5 MiB.',
+        detail: 'Yang terpanjang di Usai: 72 jam, 73,6 jt request, 0 × 5xx, memori datar (51,5 → 53,5 MiB yang ditagihkan ke container). Run kontrol 24 jam dengan data aplikasi yang dipangkas melayani 124,5 jt request tanpa penurunan throughput — perlambatan di run 72 jam berasal dari tabel yang tidak dipangkas, bukan dari runtime.',
       },
       fuzzing: {
         term: 'Fuzzing',

@@ -238,7 +238,7 @@ export const en = {
         { value: '1 000', label: 'live revision replacements', note: '2.04 M requests under load, 0 errors', source: 'reliability' },
         { value: '0 × 502', label: 'during a rolling restart', note: 'two replicas behind one proxy, under load', source: 'reliability' },
         { value: '78 M', label: 'fuzzing executions', note: 'on the first three targets, 0 crashes; two more targets since', source: 'fuzzing' },
-        { value: '39 / 39', label: 'threat-model probes passed', note: 'verified, not asserted — part of the release gate', source: 'threat' },
+        { value: '42 / 42', label: 'threat-model probes passed', note: 'verified, not asserted — part of the release gate', source: 'threat' },
       ],
       chartTitle: 'Throughput, six workload classes',
       chartLead: 'Requests per second, same contracts, same box. Pick a class and a [[concurrency|concurrency]] level.',
@@ -256,7 +256,7 @@ export const en = {
       good: [
         { title: 'You want request-shaped lifetimes on your own servers', body: 'The mental model of serverless — work arrives, runs, ends — but on a VPS, in Docker, next to a plain PostgreSQL, with pools, cron, queues and WebSockets.' },
         { title: 'Your traffic is mostly idle, then bursty', body: 'Billing APIs, webhooks, admin backends, internal tools, small SaaS. Near-zero idle CPU and fast cold responses matter more than hot-path CPU.' },
-        { title: 'Leaking context between requests would hurt', body: 'Multi-tenant backends where a stray `currentTenant` in module scope is a real incident. A fresh world per request is lifecycle hygiene — not a security boundary.' },
+        { title: 'Leaking context between requests would hurt', body: 'Multi-tenant backends where a stray `currentTenant` in module scope is a real incident. A fresh world per request is lifecycle hygiene — not a security boundary.', href: '/docs/guide/#multi-tenancy', link: 'Multi-tenancy in the guide' },
         { title: 'You run more than HTTP', body: 'Tasks, cron, queue consumers, streams, sockets and services — each with its own declared lifetime instead of one process model for everything.' },
         { title: 'You are starting something new', body: 'Greenfield services avoid migration cost. Usai is young; it is easier to adopt for a new webhook worker than for a 400k-line monolith.' },
       ],
@@ -430,7 +430,7 @@ export const en = {
     reliabilityTitle: 'Reliability',
     reliability: [
       { value: '72 h', label: 'soak: 73.6 M requests, 0 × 5xx, flat memory' },
-      { value: '24 h', label: 'soak: 35.0 M requests, 0 errors' },
+      { value: '24 h', label: 'bounded soak: 124.5 M requests, 0 × 5xx, throughput flat (1 416 → 1 480 req/s)' },
       { value: '1 000', label: 'revision replacements under load, 0 errors' },
       { value: '0 × 502', label: 'rolling restart with two replicas' },
     ],
@@ -827,7 +827,7 @@ export const en = {
         group: 'measure',
         short: 'Running under steady load for a long time to catch slow leaks.',
         analogy: 'Leaving a boat in the water for days to find slow leaks.',
-        detail: 'Usai’s longest: 72 hours, 73.6 M requests, 0 × 5xx, memory flat from 51.5 to 53.5 MiB.',
+        detail: 'Usai’s longest: 72 hours, 73.6 M requests, 0 × 5xx, memory flat (51.5 → 53.5 MiB charged to the container). A 24-hour control run with the app’s data pruned served 124.5 M requests with no throughput decay — the 72-hour run’s slowdown was its unpruned table, not the runtime.',
       },
       fuzzing: {
         term: 'Fuzzing',

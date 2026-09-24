@@ -27,6 +27,11 @@ const f = t(lang).home.fit;
                 <div>
                   <p class="font-heading font-semibold text-paper">{g.title}</p>
                   <p class="mt-1 text-sm leading-relaxed text-muted"><Rich text={g.body} {lang} /></p>
+                  {'href' in g && g.href && (
+                    <a href={g.href} class="mt-1.5 inline-block text-sm text-mint hover:underline">
+                      {g.link} →
+                    </a>
+                  )}
                 </div>
               </li>
             ))

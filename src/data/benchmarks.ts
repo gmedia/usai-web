@@ -138,11 +138,12 @@ export const efficiency = {
 /** Reliability, STATUS.md + 2026-09-18-p5-p6-qualification.md. */
 export const reliability = {
   soak72: { requests: '73.6 M', errors5xx: 0, rssFrom: 51.5, rssTo: 53.5 },
-  soak24: { requests: '35.0 M', errors: 0 },
+  // 2026-09-24-bounded-soak.md: 24 h with the application's data pruned.
+  soakBounded: { requests: '124.5 M', errors5xx: 0, errors503: 0, rpsFirstHour: 1416, rpsLastHour: 1480 },
   revisions: { replacements: 1000, requests: '2.04 M', errors: 0 },
   rolling: { replicas: 2, errors502: 0 },
   fuzz: { executions: '78 M', crashes: 0 },
-  threat: { probes: 39, passed: 39 },
+  threat: { probes: 42, passed: 42 },
 };
 
 /**
