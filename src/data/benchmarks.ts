@@ -116,8 +116,11 @@ export const probe: { server: string; answers: string; fresh: boolean }[] = [
 /**
  * Efficiency envelope. Density/idle: 2026-09-20-p8e-efficiency.md §5 (bare
  * processes, unaffected by the 2026-09-23 accounting correction). Floors:
- * SUPPORTED.md @ v0.0.9, re-measured on a box charged for its own page cache
+ * SUPPORTED.md @ v0.0.10, re-measured on a box charged for its own page cache
  * (2026-09-23-floor-accounting.md); the earlier 48 MiB / 0.25 vCPU is void.
+ * Asserted by `make verify-envelope` on 2026-09-24 against the shipping
+ * binary: the production shape peaks at 93 MiB charged inside a 192 MiB box
+ * with zero cgroup ceiling hits, and `hello` in 64 MiB stays ready.
  */
 export const efficiency = {
   idlePssMiB: 30,

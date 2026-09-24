@@ -5,6 +5,7 @@ slug: "measurements"
 source: "docs/measurements/"
 ---
 - [Benchmarks — method](/docs/measurements/benchmarks/)
+- [The control run: 24 h with a dataset that does not grow (2026-09-23/24)](/docs/measurements/2026-09-24-bounded-soak/)
 - [Threat-model verification (2026-09-23)](/docs/measurements/2026-09-23-threat-verification/)
 - [The concurrency sweep: Usai against six comparators, six workload classes](/docs/measurements/2026-09-23-sweep/)
 - [Above the sweep's ceiling: c=64 → 512, and the queue plateau explained](/docs/measurements/2026-09-23-saturation-and-queue/)
