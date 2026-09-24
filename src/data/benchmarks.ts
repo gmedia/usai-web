@@ -113,7 +113,12 @@ export const probe: { server: string; answers: string; fresh: boolean }[] = [
   { server: 'Node × 8 (cluster)', answers: '1 1 1 1 1 1 1 1 2 2', fresh: false },
 ];
 
-/** Efficiency envelope, 2026-09-20-p8e-efficiency.md. */
+/**
+ * Efficiency envelope. Density/idle: 2026-09-20-p8e-efficiency.md §5 (bare
+ * processes, unaffected by the 2026-09-23 accounting correction). Floors:
+ * SUPPORTED.md @ v0.0.9, re-measured on a box charged for its own page cache
+ * (2026-09-23-floor-accounting.md); the earlier 48 MiB / 0.25 vCPU is void.
+ */
 export const efficiency = {
   idlePssMiB: 30,
   idleCpu: '0.00 %',
@@ -123,7 +128,7 @@ export const efficiency = {
   coldFirstMs: '11–16',
   nodeColdFirstMs: '45–62',
   burstCpuVsNode: '≈1.7×',
-  technicalFloor: '48 MiB · 0.25 vCPU',
+  technicalFloor: '64 MiB',
   supportedFloor: '192 MiB · 1 vCPU',
 };
 
@@ -134,7 +139,21 @@ export const reliability = {
   revisions: { replacements: 1000, requests: '2.04 M', errors: 0 },
   rolling: { replicas: 2, errors502: 0 },
   fuzz: { executions: '78 M', crashes: 0 },
-  threat: { probes: 35, passed: 35 },
+  threat: { probes: 39, passed: 39 },
+};
+
+/**
+ * Above the sweep's ceiling, 2026-09-23-saturation-and-queue.md (Usai only,
+ * one process, default --max-worlds). [req/s, p99 ms] or 'refused'.
+ */
+export const saturationConcs = [64, 128, 256, 512] as const;
+export const saturation: Record<ClassId, ([number, number] | 'refused')[]> = {
+  A: [[15238, 7.8], [15019, 17.1], [15034, 37.5], [14976, 95.2]],
+  B: [[8440, 16.4], [8606, 37.2], [8640, 79.6], [8575, 99.4]],
+  C: [[7469, 12.8], [7166, 25.2], [7094, 43.8], 'refused'],
+  D: [[2550, 61.9], [2766, 126.2], [2630, 227.8], [2957, 379.1]],
+  E: [[4218, 50.7], [4657, 70.1], [4631, 121.1], 'refused'],
+  F: [[5837, 16.5], [5900, 27.1], [5599, 56.8], 'refused'],
 };
 
 /** Research lineage (public in docs/RESEARCH-REFERENCE.md). */

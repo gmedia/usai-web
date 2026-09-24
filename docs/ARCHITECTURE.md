@@ -56,3 +56,25 @@ Dictionary strings may contain a tiny markup language, parsed by `parseRich()` i
 GitHub Pages via `.github/workflows/deploy.yml` on push to `main`. The custom domain is `usai.sakala.dev` (`public/CNAME`). DNS: a `CNAME` record `usai` → `gmedia.github.io`. There is no base path. If the domain changes, update `site` in `astro.config.mjs`, `site.url` in `src/config/site.ts`, and `public/CNAME`.
 
 GitHub Pages serves one `/404.html` for all paths, so the 404 page speaks both languages.
+
+## Documentation (/docs)
+
+The runtime's documentation is written next to its code in `gmedia/usai`. The site renders one **release tag** of it:
+
+```text
+gmedia/usai@vX.Y.Z  docs/**/*.md, SUPPORTED.md, CHANGELOG.md, SECURITY.md, GOVERNANCE.md
+        │  scripts/sync-docs.mjs   (git archive of a local clone, or the GitHub tarball)
+        ▼
+src/content/docs/…md     title from the first H1, slug = lower-cased path, README → folder
+                         links to synced pages → /docs/<slug>/; `docs/X.md` inline refs → links;
+                         everything else → GitHub at the same tag
+src/data/docs-source.json  ref, commit, release date — also the version the whole site shows
+        ▼
+src/pages/docs/[...slug].astro → DocsPage (sidebar from data/docs-nav.ts, TOC, prev/next)
+        ▼
+pagefind --site dist      static search index over [data-pagefind-body] (docs only)
+```
+
+- Docs are English only. `/id/docs/` is an Indonesian index that explains this and links the glossary.
+- `.github/workflows/sync-docs.yml` checks for a new release every six hours and opens a PR with the re-synced docs. Numbers quoted elsewhere on the site are still reviewed by hand (AGENTS.md §11).
+- `scripts/check-links.mjs` fails CI when any internal link or `#anchor` in `dist/` does not resolve. Heading ids match GitHub's, so upstream anchors keep working.

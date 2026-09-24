@@ -1,0 +1,77 @@
+name: Sync docs from the latest Usai release
+
+# The site renders gmedia/usai's documentation at a release tag
+# (scripts/sync-docs.mjs). When a new release appears, this opens a PR that
+# re-syncs the docs and bumps the version the site describes. A maintainer
+# still reviews numbers quoted on the site (AGENTS.md §11) before merging.
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Release tag to sync (default — the latest release)
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-docs
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: tag
+        name: Compare the latest release with the synced one
+        run: |
+          ref="${{ inputs.ref }}"
+          [ -n "$ref" ] || ref=$(gh release view --repo gmedia/usai --json tagName -q .tagName)
+          current=$(node -p "require('./src/data/docs-source.json').ref")
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          if [ "$ref" != "$current" ] && ! gh pr list --state open --head "docs/sync-$ref" --json number -q '.[0].number' | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.tag.outputs.changed == 'true'
+        uses: pnpm/action-setup@v6
+      - if: steps.tag.outputs.changed == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - if: steps.tag.outputs.changed == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.tag.outputs.changed == 'true'
+        name: Sync and verify
+        run: |
+          pnpm sync:docs --ref "${{ steps.tag.outputs.ref }}"
+          pnpm verify
+      - if: steps.tag.outputs.changed == 'true'
+        name: Open a pull request
+        run: |
+          ref="${{ steps.tag.outputs.ref }}"
+          branch="docs/sync-$ref"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -A
+          git commit -m "docs: sync gmedia/usai $ref"
+          git push -u origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "docs: sync gmedia/usai $ref" \
+            --body "Re-synced the documentation from gmedia/usai@$ref (was ${{ steps.tag.outputs.current }}). The site's version follows the synced tag.
+
+          Before merging (AGENTS.md §11):
+          - [ ] Read what changed in \`docs/measurements/\`, \`SUPPORTED.md\` and \`docs/STATUS.md\` for this release.
+          - [ ] Update \`src/data/benchmarks.ts\` and the copy that cites it, verbatim, in both locales.
+          - [ ] Check \`src/data/snippets.ts\` against the SDK.
+
+          Pull requests opened with the workflow token do not trigger CI; \`pnpm verify\` already ran in this job."

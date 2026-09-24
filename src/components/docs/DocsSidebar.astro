@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import { docsNav } from '../../data/docs-nav';
+import { t, localePath, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Current doc slug, or undefined on the docs index. */
+  current?: string;
+}
+
+const { lang, current } = Astro.props;
+const d = t(lang).docs;
+const all = await getCollection('docs');
+const titleOf = new Map(all.map((e) => [e.id, e.data.title]));
+
+/** Immediate children of a section folder, e.g. "runbooks/" -> runbooks/*. */
+function childrenOf(section: string) {
+  const depth = section.split('/').filter(Boolean).length + 1;
+  return all
+    .filter((e) => e.id.startsWith(section) && e.id.split('/').length === depth)
+    .map((e) => ({ slug: e.id, label: e.data.title.replace(/^(Function|Interface|Variable|Class|Type Alias|Namespace):\s*/, '') }))
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+}
+const isIn = (slug: string, section?: string) => current === slug || (!!section && !!current?.startsWith(section));
+---
+
+<nav aria-label={d.eyebrow} class="docs-sidebar text-sm">
+  <a
+    href={localePath(lang, '/docs/')}
+    class:list={['mb-5 block rounded-lg px-3 py-2 font-medium transition-colors', !current ? 'bg-mint/10 text-paper' : 'text-muted hover:text-paper']}
+    aria-current={!current ? 'page' : undefined}>{d.overview}</a
+  >
+  {
+    docsNav.map((group) => (
+      <div class="mb-6">
+        <p class="mb-2 px-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-dim">{d.groups[group.key]}</p>
+        <ul class="space-y-0.5">
+          {group.items
+            .filter((i) => titleOf.has(i.slug))
+            .map((item) => {
+              const open = isIn(item.slug, item.section);
+              return (
+                <li>
+                  <a
+                    href={`/docs/${item.slug}/`}
+                    class:list={[
+                      'block rounded-lg px-3 py-1.5 transition-colors',
+                      current === item.slug ? 'bg-mint/10 font-medium text-paper' : open ? 'text-paper' : 'text-muted hover:text-paper',
+                    ]}
+                    aria-current={current === item.slug ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                  {open && item.section && (
+                    <ul class="my-1 ml-3 space-y-0.5 border-l border-line pl-2">
+                      {childrenOf(item.section).map((c) => (
+                        <li>
+                          <a
+                            href={`/docs/${c.slug}/`}
+                            class:list={[
+                              'block truncate rounded-md px-2 py-1 text-[0.8rem] transition-colors',
+                              current === c.slug || current?.startsWith(`${c.slug}/`) ? 'bg-white/5 text-paper' : 'text-dim hover:text-paper',
+                            ]}
+                            title={c.label}
+                            aria-current={current === c.slug ? 'page' : undefined}
+                          >
+                            {c.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+        </ul>
+      </div>
+    ))
+  }
+</nav>

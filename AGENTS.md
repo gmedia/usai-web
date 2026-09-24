@@ -29,7 +29,8 @@ pnpm dev               # http://localhost:4321
 pnpm build             # static output in dist/
 pnpm preview           # serve dist/
 pnpm check             # astro check (types, templates) + claims/brand check
-pnpm verify            # check + build + claims check on the built HTML (CI runs this)
+pnpm verify            # check + build + search index + claims check + internal link check (CI runs this)
+pnpm sync:docs --ref vX.Y.Z [--from ../usai]   # re-render the runtime docs from a release tag
 ```
 
 When an agent starts the dev server, it runs in background mode: `astro dev --background`, managed with `astro dev stop | status | logs`.
@@ -46,6 +47,9 @@ src/
   data/benchmarks.ts     every number, copied verbatim from gmedia/usai docs/measurements
   data/snippets.ts       code shown on the site (from the usai README, examples, GUIDE, runtime source)
   content/blog/<lang>/   blog posts (Markdown); schema + evidence box in src/content.config.ts
+  content/docs/          GENERATED: gmedia/usai docs at a release tag (scripts/sync-docs.mjs) — never edit
+  data/docs-source.json  which tag/commit the docs (and the site's version) come from
+  data/docs-nav.ts       the /docs sidebar
   i18n/en.ts             English copy, the source of truth for shape (Dict)
   i18n/id.ts             Bahasa Indonesia, same shape (TypeScript enforces it)
   i18n/index.ts          locales, localePath(), parseRich() ([[term]] **bold** `code`)
@@ -56,11 +60,15 @@ src/
   views/                 one view per page, rendered for each locale
   pages/                 thin wrappers: /x.astro → <View lang="en">, /id/x.astro → <View lang="id">
   pages/blog/, pages/id/blog/  blog index, posts ([slug].astro), rss.xml.ts
+  pages/docs/            /docs index + [...slug].astro for every synced page (English only; /id/docs is the index)
+  middleware.ts          external links get target="_blank" rel="noopener" on the rendered HTML
   pages/og/[slug].png.ts build-time Open Graph images (satori + resvg), one per page and post
   pages/llms.txt.ts, robots.txt.ts, manifest.webmanifest.ts
   scripts/               motion.ts (Lenis + IO reveals), hero-scene.ts (WebGL), ui.ts (copy, tabs)
   styles/global.css      Tailwind v4 @theme brand tokens + base components
 scripts/check-content.mjs  claims & brand guard (CI)
+scripts/check-links.mjs    every internal link and #anchor in dist/ resolves (CI)
+scripts/sync-docs.mjs      docs sync from gmedia/usai; .github/workflows/sync-docs.yml opens a PR on each release
 public/                  brand assets, favicons, CNAME
 ```
 
@@ -85,6 +93,8 @@ These rules come from the runtime repository (`AGENTS.md` §6, ADR-0008, `docs/b
 - Voice: **precise, honest, calm, technical**. No hype, no exclamation marks, no "revolutionary".
 - Blog posts carry an **evidence box** (status, setup, supports, does not support, sources). A claim that is not in `supports` does not belong in the post. See `docs/PUBLISHING.md`.
 - Runtime output shown on the site (error messages, CLI banners) is quoted from the runtime source or a real log, never from design documents.
+- **Link to the docs on this site**, not to `.md` files on GitHub: use `docsPath()` / `sources.*` from `src/config/site.ts`. GitHub is for the repository, releases, issues and non-Markdown files.
+- The synced docs are the runtime repository's own words and are exempt from the claims check; fix them upstream, never here.
 
 ## 5. Hard words must be solved on the page
 
@@ -153,9 +163,9 @@ Keep one `<h1>` per page and headings in order.
 
 ## 11. When gmedia/usai releases
 
-1. Update `usai.version` and `usai.released` in `src/config/site.ts`.
-2. Re-read `README.md`, `SUPPORTED.md`, `docs/STATUS.md` and new files in `docs/measurements/`. Update `src/data/benchmarks.ts` **verbatim**, then the copy that cites it, in both locales.
-3. Check `src/data/snippets.ts` against the current SDK (`docs/GUIDE.md`).
+1. `pnpm sync:docs --ref vX.Y.Z` (the `sync-docs` workflow does this and opens a PR). The site's version and release date come from `src/data/docs-source.json`, so this also bumps them.
+2. Read what changed in `SUPPORTED.md`, `docs/STATUS.md` and `docs/measurements/` since the previous tag (`git diff vA vB -- docs SUPPORTED.md`). Update `src/data/benchmarks.ts` **verbatim**, then the copy that cites it, in both locales. Corrections upstream (e.g. the voided 48 MiB floor in v0.0.9) must reach the site in the same PR.
+3. Check `src/data/snippets.ts` against the current SDK (`/docs/sdk/`).
 4. `pnpm verify`.
 
 ## 12. Definition of done

@@ -398,3 +398,23 @@
     margin-block: 2.5em;
   }
 }
+
+/* Upstream docs use blockquotes as callouts, not pull quotes. */
+@layer components {
+  .docs-prose blockquote {
+    border-left-width: 3px;
+    border-radius: 0 0.75rem 0.75rem 0;
+    background: rgb(45 212 191 / 0.05);
+    padding: 0.8em 1em;
+    font-family: var(--font-sans);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--color-fog);
+  }
+  .docs-prose blockquote > * + * {
+    margin-top: 0.6em;
+  }
+  .docs-prose h2 {
+    font-size: 1.55rem;
+  }
+}

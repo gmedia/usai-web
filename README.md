@@ -20,6 +20,8 @@ The runtime lives in [`gmedia/usai`](https://github.com/gmedia/usai). This repos
 | `/` | The model, the request pipeline (animated), workload lifetimes, ownership, code, evidence, quickstart |
 | `/benchmarks/` | Throughput across six workload classes, CPU and memory cost, the correctness probe, what is *not* measured |
 | `/research/` | How the model was tested before the runtime was built, negatives included |
+| `/docs/` | The runtime's guide, SDK reference, runbooks, contracts, ADRs and measurements, rendered from the latest release tag, with search |
+| `/blog/` | Engineering notes, each with an evidence box stating the limits of its claims (RSS) |
 | `/glossary/` | Every hard term, in plain language first, then technically |
 | `/brand/` | Logos, colours and usage |
 
@@ -33,6 +35,7 @@ Every page exists in **English** (`/`) and **Bahasa Indonesia** (`/id/`).
 - Lenis smooth scrolling and IntersectionObserver + CSS reveals, all skipped under `prefers-reduced-motion`
 - A single raw WebGL shader for the hero, with no 3D library
 - Build-time Open Graph images (satori + resvg), an i18n sitemap, JSON-LD, `llms.txt`
+- Docs synced from `gmedia/usai` at each release tag (`pnpm sync:docs`), searchable with Pagefind
 - Deployed to GitHub Pages (`.github/workflows/deploy.yml`)
 
 ## Develop

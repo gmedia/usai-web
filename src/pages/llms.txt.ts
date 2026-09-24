@@ -25,8 +25,8 @@ ${h.lifetimes.kinds.map((k) => `- ${k.kind} — \`${k.api}\` — ${k.lifetime}`)
 
 ## Evidence (with sources)
 
-${h.evidence.stats.map((s) => `- ${s.value} ${s.label} (${s.note}) — ${sources[s.source as keyof typeof sources]}`).join('\n')}
-- Trade-off: ${plain(h.evidence.tradeoff)} — ${sources.sweep}
+${h.evidence.stats.map((s) => `- ${s.value} ${s.label} (${s.note}) — ${u(sources[s.source as keyof typeof sources])}`).join('\n')}
+- Trade-off: ${plain(h.evidence.tradeoff)} — ${u(sources.sweep)}
 
 ## Quickstart
 
@@ -47,9 +47,11 @@ ${install.dev}
 ## Upstream
 
 - Repository: ${usai.repo}
-- Developer guide: ${usai.guide}
-- Status: ${usai.status_doc}
-- Supported platforms: ${usai.supported}
+- Documentation (release ${usai.docsRef}): ${u('/docs/')}
+- Developer guide: ${u(usai.guide)}
+- SDK reference: ${u(usai.sdk)}
+- Status: ${u(usai.status_doc)}
+- Supported platforms: ${u(usai.supported)}
 `;
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

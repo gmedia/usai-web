@@ -12,7 +12,7 @@ import { getPosts, postSlug } from '../../lib/blog';
 import { usai } from '../../config/site';
 import logoRaw from '../../assets/brand/usai-logo-white-no-tagline.svg?raw';
 
-const pages = ['home', 'benchmarks', 'research', 'glossary', 'brand', 'blog'] as const;
+const pages = ['home', 'benchmarks', 'research', 'glossary', 'brand', 'blog', 'docs'] as const;
 type Page = (typeof pages)[number];
 type OgProps = { lang: Lang; page: Page; post?: { title: string; kicker: string } };
 
@@ -101,6 +101,8 @@ function titleFor(lang: Lang, page: Page) {
       return { kicker: d.brand.eyebrow, title: d.brand.title };
     case 'blog':
       return { kicker: d.blog.eyebrow, title: d.blog.title };
+    case 'docs':
+      return { kicker: d.docs.eyebrow, title: d.docs.title };
   }
 }
 

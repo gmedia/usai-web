@@ -149,7 +149,7 @@ const scaleMax = 5;
         <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-muted">
           {r.open.map((n) => <li class="flex gap-2"><span aria-hidden="true" class="text-mint">?</span>{n}</li>)}
         </ul>
-        <a href={usai.openQuestions} class="link mt-5 inline-block text-sm" rel="noopener">OPEN-QUESTIONS.md ↗</a>
+        <a href={usai.openQuestions} class="link mt-5 inline-block text-sm">{d.nav.docs}: Open questions →</a>
       </div>
     </div>
   </section>
@@ -157,7 +157,7 @@ const scaleMax = 5;
   <section class="pb-28">
     <div class="container-page max-w-3xl text-center" data-reveal>
       <p class="text-sm leading-relaxed text-muted">{r.sourceNote}</p>
-      <a href={sources.researchReference} class="btn btn-ghost mt-6" rel="noopener">{r.sourceCta} ↗</a>
+      <a href={sources.researchReference} class="btn btn-ghost mt-6">{r.sourceCta} →</a>
       <p class="mt-16 font-heading text-2xl font-semibold text-paper sm:text-3xl"><span class="text-gradient">{r.closing}</span></p>
     </div>
   </section>

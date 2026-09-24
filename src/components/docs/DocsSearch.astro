@@ -1,0 +1,119 @@
+---
+/**
+ * Docs search: Pagefind's static index (built after `astro build`), loaded
+ * only when the dialog is first opened. In `astro dev` there is no index, so
+ * the dialog says so.
+ */
+import Icon from '../Icon.astro';
+import { t, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Render the dialog too. Only one instance per page may (it has an id). */
+  dialog?: boolean;
+}
+
+const { lang, dialog = true } = Astro.props;
+const d = t(lang).docs;
+---
+
+<button
+  type="button"
+  class="docs-search-btn flex w-full items-center gap-2 rounded-xl border border-line bg-ink/70 px-3 py-2.5 text-left text-sm text-dim transition-colors hover:border-mint/40 hover:text-muted"
+  popovertarget="docs-search"
+  data-docs-search-open
+>
+  <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+  <span class="flex-1">{d.search}</span>
+  <kbd class="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[0.65rem] sm:inline">/</kbd>
+</button>
+
+{dialog && <div id="docs-search" popover="auto" class="docs-search-dialog" aria-label={d.search}>
+  <div class="flex items-center justify-between border-b border-line px-4 py-3">
+    <p class="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-mint">{d.search}</p>
+    <button type="button" popovertarget="docs-search" popovertargetaction="hide" class="inline-flex size-8 items-center justify-center rounded-lg text-muted hover:text-paper" aria-label="Close">
+      <Icon name="close" class="size-4" />
+    </button>
+  </div>
+  <div id="docs-search-ui" class="p-4" data-placeholder={d.search}></div>
+</div>}
+
+<style>
+  .docs-search-dialog {
+    position: fixed;
+    inset: 4.5rem 0.75rem auto 0.75rem;
+    margin: 0 auto;
+    width: auto;
+    max-width: 44rem;
+    max-height: calc(100dvh - 6rem);
+    overflow: auto;
+    border: 1px solid rgb(45 212 191 / 0.25);
+    border-radius: 1rem;
+    background: rgb(5 28 26 / 0.98);
+    color: var(--color-fog);
+    padding: 0;
+  }
+  .docs-search-dialog::backdrop {
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(2px);
+  }
+  :global(#docs-search-ui) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #2dd4bf;
+    --pagefind-ui-text: #e5e7eb;
+    --pagefind-ui-background: #03110f;
+    --pagefind-ui-border: rgb(229 231 235 / 0.14);
+    --pagefind-ui-tag: #0b4a46;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 10px;
+    --pagefind-ui-font: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  }
+  :global(#docs-search-ui mark) {
+    background: rgb(45 212 191 / 0.25);
+    color: #fafbfc;
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('docs-search');
+  const mount = document.getElementById('docs-search-ui');
+  let loaded = false;
+
+  async function load() {
+    if (loaded || !mount) return;
+    loaded = true;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = '/pagefind/pagefind-ui.css';
+    document.head.append(css);
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = '/pagefind/pagefind-ui.js';
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('no index'));
+        document.head.append(s);
+      });
+      // @ts-expect-error — global provided by pagefind-ui.js
+      new window.PagefindUI({ element: '#docs-search-ui', showSubResults: true, showImages: false, resetStyles: false, translations: { placeholder: mount.dataset.placeholder } });
+      requestAnimationFrame(() => mount.querySelector<HTMLInputElement>('input')?.focus());
+    } catch {
+      mount.innerHTML = '<p class="text-sm text-muted">The search index is built with <code>pnpm build</code>; it is not available in <code>astro dev</code>.</p>';
+    }
+  }
+
+  dialog?.addEventListener('toggle', (e) => {
+    if ((e as ToggleEvent).newState === 'open') {
+      load();
+      mount?.querySelector<HTMLInputElement>('input')?.focus();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const target = e.target as HTMLElement;
+    if (e.key === '/' && !/input|textarea|select/i.test(target.tagName) && !target.isContentEditable) {
+      e.preventDefault();
+      dialog?.showPopover?.();
+    }
+  });
+</script>

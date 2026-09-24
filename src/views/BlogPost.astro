@@ -51,6 +51,7 @@ const toc = headings.filter((h) => h.depth === 2);
   description={post.data.description}
   breadcrumb={d.nav.blog}
   {alternates}
+  langFallback="/blog/"
   {ogImage}
   noindex={post.data.draft}
   article={{ published: post.data.date, modified: post.data.updated, author: post.data.author, tags: post.data.tags }}

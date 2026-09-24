@@ -1,53 +1,69 @@
 /**
  * Facts about the project that the site repeats in many places.
  * Every value here must be verifiable in gmedia/usai (see docs/DATA-SOURCES.md).
- * Bump `usai.version`/`usai.released` when a new usai release ships.
+ * On a new usai release: bump `usai.version`/`usai.released`, then
+ * `pnpm sync:docs --ref vX.Y.Z` (AGENTS.md §11).
  */
+import docsSource from '../data/docs-source.json';
+
 export const site = {
   url: 'https://usai.sakala.dev',
   name: 'Usai',
   repoWeb: 'https://github.com/gmedia/usai-web',
 } as const;
 
+/** A page of the runtime documentation rendered on this site (synced at `docsSource.ref`). */
+export const docsPath = (slug: string) => `/docs/${slug}/`;
+
 export const usai = {
-  version: '0.0.8',
-  released: '2026-09-23',
+  // The site describes the release its docs were synced from (pnpm sync:docs).
+  version: docsSource.ref.replace(/^v/, ''),
+  released: docsSource.released,
   status: 'alpha',
   license: 'Apache-2.0',
+  docsRef: docsSource.ref,
   repo: 'https://github.com/gmedia/usai',
   releases: 'https://github.com/gmedia/usai/releases',
   issues: 'https://github.com/gmedia/usai/issues',
   npm: 'https://www.npmjs.com/package/@sakaladev/usai',
   npmCreate: 'https://www.npmjs.com/package/@sakaladev/create-usai',
   docker: 'https://hub.docker.com/r/sakaladev/usai',
-  guide: 'https://github.com/gmedia/usai/blob/main/docs/GUIDE.md',
-  sdk: 'https://github.com/gmedia/usai/tree/main/docs/sdk',
-  status_doc: 'https://github.com/gmedia/usai/blob/main/docs/STATUS.md',
-  supported: 'https://github.com/gmedia/usai/blob/main/SUPPORTED.md',
-  roadmap: 'https://github.com/gmedia/usai/blob/main/docs/ROADMAP.md',
-  governance: 'https://github.com/gmedia/usai/blob/main/GOVERNANCE.md',
-  security: 'https://github.com/gmedia/usai/blob/main/SECURITY.md',
-  contracts: 'https://github.com/gmedia/usai/blob/main/docs/LIFECYCLE-CONTRACTS.md',
-  glossary: 'https://github.com/gmedia/usai/blob/main/docs/GLOSSARY.md',
-  openQuestions: 'https://github.com/gmedia/usai/blob/main/docs/OPEN-QUESTIONS.md',
-  researchReference: 'https://github.com/gmedia/usai/blob/main/docs/RESEARCH-REFERENCE.md',
+  // Documentation now lives on this site (/docs), rendered from the release tag.
+  docs: '/docs/',
+  guide: docsPath('guide'),
+  sdk: docsPath('sdk'),
+  status_doc: docsPath('status'),
+  supported: docsPath('supported'),
+  roadmap: docsPath('roadmap'),
+  governance: docsPath('governance'),
+  security: docsPath('security'),
+  contracts: docsPath('lifecycle-contracts'),
+  glossary: docsPath('glossary'),
+  openQuestions: docsPath('open-questions'),
+  researchReference: docsPath('research-reference'),
+  p7: docsPath('p7-external-validation'),
+  changelog: docsPath('changelog'),
+  runbooks: docsPath('runbooks'),
+  // Not synced (binary assets): stays on GitHub.
   brand: 'https://github.com/gmedia/usai/tree/main/docs/brand',
-  p7: 'https://github.com/gmedia/usai/blob/main/docs/P7-EXTERNAL-VALIDATION.md',
 } as const;
 
-/** Link to a file in gmedia/usai. */
-export const usaiFile = (path: string) => `${usai.repo}/blob/main/${path}`;
+/** Link to a file in gmedia/usai at the synced release tag. */
+export const usaiFile = (path: string) => `${usai.repo}/blob/${docsSource.ref}/${path}`;
 
+/** Measurement reports and other evidence, as pages of /docs. */
 export const sources = {
-  sweep: usaiFile('docs/measurements/2026-09-23-sweep.md'),
-  benchmarks: usaiFile('docs/measurements/BENCHMARKS.md'),
-  efficiency: usaiFile('docs/measurements/2026-09-20-p8e-efficiency.md'),
-  reliability: usaiFile('docs/measurements/2026-09-18-p5-p6-qualification.md'),
-  fuzzing: usaiFile('docs/measurements/2026-09-20-fuzzing.md'),
-  threat: usaiFile('docs/measurements/2026-09-23-threat-verification.md'),
-  status: usaiFile('docs/STATUS.md'),
-  supported: usaiFile('SUPPORTED.md'),
-  researchReference: usaiFile('docs/RESEARCH-REFERENCE.md'),
+  sweep: docsPath('measurements/2026-09-23-sweep'),
+  saturation: docsPath('measurements/2026-09-23-saturation-and-queue'),
+  floors: docsPath('measurements/2026-09-23-floor-accounting'),
+  benchmarks: docsPath('measurements/benchmarks'),
+  efficiency: docsPath('measurements/2026-09-20-p8e-efficiency'),
+  reliability: docsPath('measurements/2026-09-18-p5-p6-qualification'),
+  fuzzing: docsPath('measurements/2026-09-20-fuzzing'),
+  threat: docsPath('measurements/2026-09-23-threat-verification'),
+  status: docsPath('status'),
+  supported: docsPath('supported'),
+  researchReference: docsPath('research-reference'),
   readme: usaiFile('README.md'),
 } as const;
 

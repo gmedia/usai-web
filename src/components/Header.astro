@@ -7,12 +7,13 @@ import Icon from './Icon.astro';
 interface Props {
   lang: Lang;
   path: string;
-  /** Locales this page exists in; others link to their blog index. */
+  /** Locales this page exists in; the others link to `fallback`. */
   alternates?: Lang[];
+  fallback?: string;
 }
 
-const { lang, path, alternates = [...locales] } = Astro.props;
-const switchHref = (l: Lang) => localePath(l, alternates.includes(l) ? path : '/blog/');
+const { lang, path, alternates = [...locales], fallback = '/' } = Astro.props;
+const switchHref = (l: Lang) => localePath(l, alternates.includes(l) ? path : fallback);
 const d = t(lang);
 
 const links = [
@@ -43,7 +44,11 @@ const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false"
           </a>
         ))
       }
-      <a href={usai.guide} class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-paper" rel="noopener">
+      <a
+        href={localePath(lang, '/docs/')}
+        class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-paper"
+        aria-current={path.startsWith('/docs/') ? 'page' : undefined}
+      >
         {d.nav.docs}
       </a>
     </nav>
@@ -101,7 +106,7 @@ const logoSvg = logo.replace('<svg ', '<svg aria-hidden="true" focusable="false"
         ))
       }
       <li>
-        <a href={usai.guide} class="block border-b border-line py-4 font-heading text-2xl text-paper" rel="noopener">{d.nav.docs} ↗</a>
+        <a href={localePath(lang, '/docs/')} class="block border-b border-line py-4 font-heading text-2xl text-paper" data-close-nav>{d.nav.docs}</a>
       </li>
       <li>
         <a href={usai.repo} class="block border-b border-line py-4 font-heading text-2xl text-paper" rel="noopener">{d.nav.github} ↗</a>

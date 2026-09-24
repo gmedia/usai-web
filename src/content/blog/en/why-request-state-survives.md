@@ -11,7 +11,7 @@ series:
   name: How Usai works
   part: 1
 evidence:
-  status: Usai v0.0.8, alpha. Production qualification is in progress; contracts may still change.
+  status: Usai v0.0.9, alpha. Production qualification is in progress; contracts may still change. The sweep was measured on 0.0.8.
   setup: 'The correctness probe and the throughput and CPU numbers come from the 2026-09-23 sweep: a Xeon E5-2680 v4, the server pinned to 8 CPUs, PostgreSQL 18, and six workload classes against Node, Node × 8, Bun, Deno, Rust axum and PHP-FPM.'
   supports:
     - Usai gives every unit of work a fresh execution world. A module-level counter answers 1 on every request.
@@ -23,9 +23,9 @@ evidence:
     - That Usai is ready for every production workload.
   sources:
     - label: 2026-09-23-sweep.md
-      url: https://github.com/gmedia/usai/blob/main/docs/measurements/2026-09-23-sweep.md
+      url: https://usai.sakala.dev/docs/measurements/2026-09-23-sweep/
     - label: LIFECYCLE-CONTRACTS.md
-      url: https://github.com/gmedia/usai/blob/main/docs/LIFECYCLE-CONTRACTS.md
+      url: https://usai.sakala.dev/docs/lifecycle-contracts/
     - label: AWS Lambda best practices
       url: https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html
     - label: Cloudflare Workers best practices
@@ -184,6 +184,6 @@ pnpm dlx @sakaladev/create-usai my-app
 cd my-app && pnpm install && pnpm dev
 ```
 
-Usai is alpha, at 0.0.8. It has survived a 72-hour soak and a campaign of deliberate failures, and it has not yet met many developers outside the project. That is the next experiment. If you try it, we want to hear where the model confused you, where it got in your way, and where it caught a bug you did not know you had.
+Usai is alpha, at 0.0.9. It has survived a 72-hour soak and a campaign of deliberate failures, and it has not yet met many developers outside the project. That is the next experiment. If you try it, we want to hear where the model confused you, where it got in your way, and where it caught a bug you did not know you had.
 
 The next posts in this series go deeper: how a world is created cheaply, what 73 million requests over three days taught us, and where Usai loses.

@@ -47,10 +47,13 @@ const walk = (dir, exts) => {
 };
 walk(join(root, 'src/i18n'), ['.ts']);
 walk(join(root, 'src/data'), ['.ts']);
-walk(join(root, 'src/content'), ['.md', '.mdx']);
+walk(join(root, 'src/content/blog'), ['.md', '.mdx']);
 walk(join(root, 'src/components'), ['.astro', '.tsx']);
 walk(join(root, 'src/views'), ['.astro']);
 walk(join(root, 'dist'), ['.html', '.txt']);
+// Upstream documentation (src/content/docs, dist/docs) is the runtime
+// repository's own text, synced verbatim; its claims are governed there.
+for (let i = files.length - 1; i >= 0; i--) if (/[\\/]dist[\\/]docs[\\/]|[\\/]dist[\\/]pagefind[\\/]/.test(files[i])) files.splice(i, 1);
 
 let failures = 0;
 for (const file of files) {

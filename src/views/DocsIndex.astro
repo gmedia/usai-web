@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import DocsSidebar from '../components/docs/DocsSidebar.astro';
+import DocsSearch from '../components/docs/DocsSearch.astro';
+import Icon from '../components/Icon.astro';
+import CopyCommand from '../components/CopyCommand.astro';
+import { t, localePath, type Lang } from '../i18n';
+import { docsNav } from '../data/docs-nav';
+import { install } from '../config/site';
+import source from '../data/docs-source.json';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const d = t(lang).docs;
+---
+
+<Base {lang} path="/docs/" page="docs" title={d.meta.title} description={d.meta.description} breadcrumb={d.eyebrow}>
+  <div class="container-page pb-24 pt-28 sm:pt-36">
+    <div class="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 max-h-[calc(100dvh-7rem)] overflow-y-auto pb-8 pr-2" data-lenis-prevent>
+          <DocsSidebar {lang} />
+        </div>
+      </aside>
+
+      <div class="min-w-0">
+        <SectionHeading {lang} as="h1" eyebrow={d.eyebrow} title={d.title} lead={d.lead} />
+        <p class="mt-5 flex flex-wrap items-center gap-2 font-mono text-xs text-dim">
+          <span class="rounded-full border border-mint/30 px-2 py-0.5 text-mint">{d.version} {source.ref}</span>
+          <span>{d.synced} · {source.commit.slice(0, 7)}</span>
+        </p>
+        {d.englishOnly && <p class="mt-5 max-w-2xl rounded-xl border border-line bg-white/[0.02] p-4 text-sm leading-relaxed text-muted">{d.englishOnly} <a class="link" href={localePath(lang, '/glossary/')}>{t(lang).nav.glossary} →</a></p>}
+
+        <div class="mt-8 max-w-xl"><DocsSearch {lang} /></div>
+
+        <div class="mt-8 max-w-xl"><CopyCommand cmd={install.create} {lang} /></div>
+
+        <ul class="mt-12 grid gap-4 sm:grid-cols-2">
+          {
+            d.cards.map((c) => (
+              <li>
+                <a href={`/docs/${c.slug}/`} class="card group flex h-full flex-col p-6 transition-colors hover:border-mint/35">
+                  <h2 class="font-heading text-lg font-semibold text-paper group-hover:text-mint">{c.title}</h2>
+                  <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{c.body}</p>
+                  <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-mint">
+                    /docs/{c.slug}/ <Icon name="arrow" class="size-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="mt-14 grid gap-8 sm:grid-cols-2">
+          {
+            docsNav.map((g) => (
+              <div>
+                <h2 class="font-mono text-xs uppercase tracking-[0.16em] text-dim">{d.groups[g.key]}</h2>
+                <ul class="mt-3 space-y-1.5">
+                  {g.items.map((i) => (
+                    <li>
+                      <a href={`/docs/${i.slug}/`} class="text-sm text-muted transition-colors hover:text-mint">
+                        {i.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>

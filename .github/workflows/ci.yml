@@ -23,7 +23,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Types, build, claims & brand check
+      - name: Types, build, search index, claims & brand, internal links
         run: pnpm verify
       - name: Built output sanity
         run: |
@@ -35,3 +35,6 @@ jobs:
           test "$(cat dist/CNAME)" = "usai.sakala.dev"
           grep -q 'hreflang="id"' dist/index.html
           grep -q 'application/ld+json' dist/index.html
+          test -f dist/docs/guide/index.html
+          test -f dist/pagefind/pagefind-ui.js
+          test -f dist/blog/rss.xml

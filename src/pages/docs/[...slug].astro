@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import DocsPage from '../../views/DocsPage.astro';
+
+export const getStaticPaths = (async () => {
+  const entries = await getCollection('docs');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props as { entry: CollectionEntry<'docs'> };
+---
+
+<DocsPage {entry} />

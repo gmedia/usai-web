@@ -11,7 +11,7 @@ series:
   name: Cara kerja Usai
   part: 1
 evidence:
-  status: Usai v0.0.8, alpha. Kualifikasi produksi sedang berjalan; kontrak masih bisa berubah.
+  status: Usai v0.0.9, alpha. Kualifikasi produksi sedang berjalan; kontrak masih bisa berubah. Sweep-nya diukur pada 0.0.8.
   setup: 'Probe correctness serta angka throughput dan CPU berasal dari sweep 23-09-2026: Xeon E5-2680 v4, server di-pin ke 8 CPU, PostgreSQL 18, enam kelas workload melawan Node, Node × 8, Bun, Deno, Rust axum, dan PHP-FPM.'
   supports:
     - Usai memberi setiap unit pekerjaan execution world yang baru. Counter di level module menjawab 1 di setiap request.
@@ -23,9 +23,9 @@ evidence:
     - Bahwa Usai siap untuk semua workload produksi.
   sources:
     - label: 2026-09-23-sweep.md
-      url: https://github.com/gmedia/usai/blob/main/docs/measurements/2026-09-23-sweep.md
+      url: https://usai.sakala.dev/docs/measurements/2026-09-23-sweep/
     - label: LIFECYCLE-CONTRACTS.md
-      url: https://github.com/gmedia/usai/blob/main/docs/LIFECYCLE-CONTRACTS.md
+      url: https://usai.sakala.dev/docs/lifecycle-contracts/
     - label: AWS Lambda best practices
       url: https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html
     - label: Cloudflare Workers best practices
@@ -184,6 +184,6 @@ pnpm dlx @sakaladev/create-usai my-app
 cd my-app && pnpm install && pnpm dev
 ```
 
-Usai masih alpha, di versi 0.0.8. Ia sudah melewati soak 72 jam dan serangkaian kegagalan yang disengaja, tapi belum banyak bertemu developer dari luar proyek. Itulah eksperimen berikutnya. Kalau kamu mencobanya, kami ingin tahu di mana modelnya membingungkan, di mana ia menghalangimu, dan di mana ia menangkap bug yang tidak kamu sadari.
+Usai masih alpha, di versi 0.0.9. Ia sudah melewati soak 72 jam dan serangkaian kegagalan yang disengaja, tapi belum banyak bertemu developer dari luar proyek. Itulah eksperimen berikutnya. Kalau kamu mencobanya, kami ingin tahu di mana modelnya membingungkan, di mana ia menghalangimu, dan di mana ia menangkap bug yang tidak kamu sadari.
 
 Tulisan berikutnya di seri ini akan masuk lebih dalam: bagaimana world dibuat dengan murah, apa yang kami pelajari dari 73 juta request selama tiga hari, dan di mana Usai kalah.

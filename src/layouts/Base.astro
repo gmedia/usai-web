@@ -15,11 +15,13 @@ interface Props {
   graph?: Record<string, unknown>[];
   breadcrumb?: string;
   alternates?: Lang[];
+  /** Where the language switch goes for locales this page does not exist in. */
+  langFallback?: string;
   ogImage?: string;
   article?: { published: Date; modified?: Date; author: string; tags?: string[] };
 }
 
-const { lang, path, page, title, description, noindex, graph, breadcrumb, alternates, ogImage, article } = Astro.props;
+const { lang, path, page, title, description, noindex, graph, breadcrumb, alternates, langFallback, ogImage, article } = Astro.props;
 const d = t(lang);
 ---
 
@@ -58,7 +60,7 @@ const d = t(lang);
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-teal focus:px-4 focus:py-2 focus:text-white"
       >{d.nav.skip}</a
     >
-    <Header {lang} {path} {alternates} />
+    <Header {lang} {path} {alternates} fallback={langFallback} />
     <main id="main">
       <slot />
     </main>

@@ -39,4 +39,16 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+/**
+ * Runtime documentation, synced from gmedia/usai at a release tag by
+ * scripts/sync-docs.mjs. Generated — never edit by hand.
+ */
+const docs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/docs' }),
+  schema: z.object({
+    title: z.string(),
+    source: z.string(),
+  }),
+});
+
+export const collections = { blog, docs };

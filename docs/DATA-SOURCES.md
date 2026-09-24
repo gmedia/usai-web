@@ -5,12 +5,13 @@ Every number on the site comes from a file in [`gmedia/usai`](https://github.com
 | Site data | Upstream | Notes |
 |---|---|---|
 | `throughput`, `cost`, `laravelRatio`, `probe` in `src/data/benchmarks.ts` | `docs/measurements/2026-09-23-sweep.md` (commit `8acb9ed`) | Copied verbatim; PHP rows from the same-day re-run |
-| `efficiency` | `docs/measurements/2026-09-20-p8e-efficiency.md` | ≈30 MiB PSS / 0.00 % CPU per idle app at N = 50; floors 48 MiB·0.25 vCPU (technical), 192 MiB·1 vCPU (supported, `SUPPORTED.md`) |
-| `reliability` | `docs/STATUS.md`, `docs/measurements/2026-09-18-p5-p6-qualification.md`, `-fuzzing.md`, `-threat-verification.md` | "0 × 502" is the **two-replica** rolling restart; a single replica has a restart window |
+| `efficiency` | `docs/measurements/2026-09-20-p8e-efficiency.md` §5 (density, idle); floors from `SUPPORTED.md` @ v0.0.9 and `2026-09-23-floor-accounting.md` | ≈30 MiB PSS / 0.00 % CPU per idle app at N = 50 (bare processes, unaffected by the correction). Floors re-measured on a box charged for its own page cache: **192 MiB · 1 vCPU** supported, **64 MiB** technical. The 48 MiB · 0.25 vCPU of 2026-09-20 is **void** — never quote it |
+| `saturation` | `docs/measurements/2026-09-23-saturation-and-queue.md` | Usai only, c = 64 → 512; `'refused'` = 503 by the overload contract |
+| `reliability` | `docs/STATUS.md`, `docs/measurements/2026-09-18-p5-p6-qualification.md`, `-fuzzing.md`, `-threat-verification.md` | "0 × 502" is the **two-replica** rolling restart; a single replica has a restart window. Threat probes: **39/39** at v0.0.9 (35 at v0.0.8). Fuzzing: 78 M on the first three targets; two more targets (guest bridge, SQL parameters) since |
 | `researchLineage` | `docs/RESEARCH-REFERENCE.md` | Public research numbers only; research page carries the caveats |
 | `snippets` | `README.md`, `examples/hello`, `docs/GUIDE.md` §5–§10, §15 | The counter snippet is illustrative (labelled as such) |
 | `snippets.antiPatternError` | `crates/usai-runtime/src/world.rs` (`LifecycleViolation::detached_work`), checked against a real log line in `scripts/qualification/threat/out/*/server.log` | Line-wrapped for the page. `GOAL.md` §17 shows an older design wording; do not use it |
-| Version, release date | `Cargo.toml`, `CHANGELOG.md` | `src/config/site.ts` |
+| Version, release date | the synced tag — `src/data/docs-source.json` | `src/config/site.ts` reads it |
 | Platforms | `SUPPORTED.md` | Quickstart section |
 
 ## Known upstream discrepancies
