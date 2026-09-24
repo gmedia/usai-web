@@ -5,7 +5,7 @@ translationKey: why-request-state-survives
 lang: en
 date: 2026-09-24
 author: Sakala maintainers
-draft: true
+draft: false
 tags: [lifetimes, runtime, typescript, backend]
 series:
   name: How Usai works

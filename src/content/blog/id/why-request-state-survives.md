@@ -5,7 +5,7 @@ translationKey: why-request-state-survives
 lang: id
 date: 2026-09-24
 author: Sakala maintainers
-draft: true
+draft: false
 tags: [lifetimes, runtime, typescript, backend]
 series:
   name: Cara kerja Usai
