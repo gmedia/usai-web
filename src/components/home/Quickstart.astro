@@ -1,6 +1,7 @@
 ---
 import SectionHeading from '../SectionHeading.astro';
 import CopyCommand from '../CopyCommand.astro';
+import InstallCommands from '../InstallCommands.astro';
 import Icon from '../Icon.astro';
 import { t, type Lang } from '../../i18n';
 import { usai } from '../../config/site';
@@ -20,19 +21,9 @@ const principles = d.home.principles;
     <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
         <SectionHeading {lang} id="quickstart-title" eyebrow={q.eyebrow} title={q.title} lead={q.lead} />
-        <ol class="mt-10 space-y-5">
-          {
-            q.steps.map((s, i) => (
-              <li data-reveal data-reveal-delay={String(i * 0.06)}>
-                <p class="mb-2 flex items-center gap-2 text-sm font-semibold text-paper">
-                  <span class="flex size-6 items-center justify-center rounded-full bg-mint/15 font-mono text-xs text-mint">{i + 1}</span>
-                  {s.title}
-                </p>
-                <CopyCommand cmd={s.cmd} {lang} />
-              </li>
-            ))
-          }
-        </ol>
+        <div class="mt-10" data-reveal>
+          <InstallCommands {lang} variant="steps" titles={q.steps.map((s) => s.title)} />
+        </div>
         <div class="mt-8 rounded-2xl border border-line p-5" data-reveal>
           <p class="text-sm font-semibold text-paper">{q.dockerTitle}</p>
           <CopyCommand cmd={q.dockerCmd} {lang} class="mt-3" />

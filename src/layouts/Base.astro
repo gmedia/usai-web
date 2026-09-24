@@ -45,6 +45,10 @@ const d = t(lang);
       // timer shows everything if the motion bundle never arrives.
       (function () {
         var d = document.documentElement;
+        try {
+          var pm = localStorage.getItem('usai-pm');
+          if (pm === 'npm' || pm === 'pnpm') d.dataset.pm = pm;
+        } catch (e) {}
         if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
           d.classList.add('js-motion');
           setTimeout(function () {

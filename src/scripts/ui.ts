@@ -52,5 +52,27 @@ function initTabs() {
   });
 }
 
+/** npm | pnpm switch shared by every InstallCommands block on the page. */
+function initPackageManager() {
+  const root = document.documentElement;
+  const sync = () => {
+    const pm = root.dataset.pm === 'pnpm' ? 'pnpm' : 'npm';
+    document.querySelectorAll<HTMLButtonElement>('[data-pm-choose]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.pmChoose === pm)));
+  };
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-pm-choose]');
+    if (!btn?.dataset.pmChoose) return;
+    root.dataset.pm = btn.dataset.pmChoose;
+    try {
+      localStorage.setItem('usai-pm', btn.dataset.pmChoose);
+    } catch {
+      /* private mode: the choice lasts for this page only */
+    }
+    sync();
+  });
+  sync();
+}
+
 initCopy();
 initTabs();
+initPackageManager();

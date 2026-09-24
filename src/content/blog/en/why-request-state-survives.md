@@ -181,9 +181,11 @@ So Usai is not the choice for a hot, CPU-bound endpoint where every microsecond 
 ## Try it, and try to break it
 
 ```bash
-pnpm dlx @sakaladev/create-usai my-app
-cd my-app && pnpm install && pnpm dev
+npm create @sakaladev/usai@latest my-app
+cd my-app && npm install && npm run dev
 ```
+
+With pnpm it is `pnpm dlx @sakaladev/create-usai my-app`, then `pnpm install && pnpm dev`. pnpm 12 installs a new release only once it is a day old, so on a release day npm is the way to get the latest.
 
 Usai is alpha, at 0.0.10. It has survived a 72-hour soak and a campaign of deliberate failures, and it has not yet met many developers outside the project. That is the next experiment. If you try it, we want to hear where the model confused you, where it got in your way, and where it caught a bug you did not know you had.
 

@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import DocsSidebar from '../components/docs/DocsSidebar.astro';
-import CopyCommand from '../components/CopyCommand.astro';
+import InstallCommands from '../components/InstallCommands.astro';
 import CodeWindow from '../components/CodeWindow.astro';
 import Rich from '../components/Rich.astro';
 import Icon from '../components/Icon.astro';
@@ -51,19 +51,7 @@ const marks = ['①', '②', '③', '④', '⑤'];
         <section class="mt-16" aria-labelledby="install">
           <h2 id="install" class="text-2xl font-bold sm:text-3xl">{s.installTitle}</h2>
           <p class="mt-4 text-muted"><Rich text={s.installNeeds} {lang} /></p>
-          <ol class="mt-6 space-y-5">
-            {
-              s.installSteps.map((step, i) => (
-                <li>
-                  <p class="mb-2 flex items-center gap-2 text-sm font-semibold text-paper">
-                    <span class="flex size-6 items-center justify-center rounded-full bg-mint/15 font-mono text-xs text-mint">{i + 1}</span>
-                    {step.title}
-                  </p>
-                  <CopyCommand cmd={step.cmd} {lang} />
-                </li>
-              ))
-            }
-          </ol>
+          <InstallCommands {lang} variant="steps" titles={s.installSteps.map((x) => x.title)} class="mt-6" />
           <p class="mt-5 text-sm text-dim"><Rich text={s.installDocker} {lang} /></p>
         </section>
 

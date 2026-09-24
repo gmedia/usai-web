@@ -68,9 +68,18 @@ export const sources = {
   readme: usaiFile('README.md'),
 } as const;
 
+/**
+ * Quickstart commands per package manager. Both are tested upstream
+ * (SUPPORTED.md: "pnpm … or npm; both are tested"). npm is the default
+ * because pnpm 12 only resolves a release once it is a day old
+ * (minimumReleaseAge), so on a release day `pnpm dlx` scaffolds the previous
+ * version; `npm create` is always current.
+ */
+export const packageManagers = ['npm', 'pnpm'] as const;
+export type PackageManager = (typeof packageManagers)[number];
 export const install = {
-  create: 'pnpm dlx @sakaladev/create-usai my-app',
-  createNpm: 'npm create @sakaladev/usai@latest my-app',
-  dev: 'cd my-app && pnpm install && pnpm dev',
+  npm: { create: 'npm create @sakaladev/usai@latest my-app', run: 'cd my-app && npm install && npm run dev' },
+  pnpm: { create: 'pnpm dlx @sakaladev/create-usai my-app', run: 'cd my-app && pnpm install && pnpm dev' },
+  call: 'curl http://127.0.0.1:3000/hello/world',
   docker: 'docker compose up',
 } as const;

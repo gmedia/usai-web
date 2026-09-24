@@ -418,3 +418,16 @@
     font-size: 1.55rem;
   }
 }
+
+/* npm | pnpm switch (InstallCommands.astro). npm unless html[data-pm="pnpm"]. */
+@layer components {
+  html:not([data-pm='pnpm']) [data-pm-panel='pnpm'],
+  html[data-pm='pnpm'] [data-pm-panel='npm'] {
+    display: none;
+  }
+  html:not([data-pm='pnpm']) [data-pm-choose='npm'],
+  html[data-pm='pnpm'] [data-pm-choose='pnpm'] {
+    background: rgb(45 212 191 / 0.1);
+    color: var(--color-mint);
+  }
+}

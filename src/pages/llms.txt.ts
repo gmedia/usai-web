@@ -31,8 +31,12 @@ ${h.evidence.stats.map((s) => `- ${s.value} ${s.label} (${s.note}) — ${u(sourc
 ## Quickstart
 
 \`\`\`bash
-${install.create}
-${install.dev}
+# npm (always the current release)
+${install.npm.create}
+${install.npm.run}
+# pnpm (pnpm 12 installs a release once it is a day old)
+${install.pnpm.create}
+${install.pnpm.run}
 \`\`\`
 
 ## Pages

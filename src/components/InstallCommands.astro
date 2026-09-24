@@ -1,0 +1,59 @@
+---
+/**
+ * Quickstart commands with an npm | pnpm switch. Every instance on the page
+ * follows one choice (html[data-pm], remembered in localStorage by ui.ts and
+ * restored before paint in Base.astro). Without JavaScript, npm shows.
+ */
+import CopyCommand from './CopyCommand.astro';
+import { install, packageManagers } from '../config/site';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** "single": only the create command. "steps": create, install+run, call. */
+  variant?: 'single' | 'steps';
+  /** Step titles for the "steps" variant (create, run, call). */
+  titles?: string[];
+  label?: string;
+  class?: string;
+}
+
+const { lang, variant = 'single', titles = [], label, class: className } = Astro.props;
+const d = t(lang).common;
+---
+
+<div class:list={['install-commands', className]}>
+  <div class="mb-2 flex items-center gap-1" role="group" aria-label={d.pmLabel}>
+    {
+      packageManagers.map((pm) => (
+        <button type="button" class="pm-tab rounded-md px-2.5 py-1 font-mono text-xs text-dim transition-colors hover:text-paper" data-pm-choose={pm} aria-pressed={pm === 'npm' ? 'true' : 'false'}>
+          {pm}
+        </button>
+      ))
+    }
+  </div>
+  {
+    packageManagers.map((pm) => (
+      <div data-pm-panel={pm}>
+        {variant === 'single' ? (
+          <CopyCommand cmd={install[pm].create} {lang} {label} />
+        ) : (
+          <ol class="space-y-5">
+            {[install[pm].create, install[pm].run, install.call].map((cmd, i) => (
+              <li>
+                {titles[i] && (
+                  <p class="mb-2 flex items-center gap-2 text-sm font-semibold text-paper">
+                    <span class="flex size-6 items-center justify-center rounded-full bg-mint/15 font-mono text-xs text-mint">{i + 1}</span>
+                    {titles[i]}
+                  </p>
+                )}
+                <CopyCommand {cmd} {lang} />
+              </li>
+            ))}
+          </ol>
+        )}
+        {pm === 'pnpm' && <p class="mt-2 text-xs leading-relaxed text-dim">{d.pnpmNote}</p>}
+      </div>
+    ))
+  }
+</div>

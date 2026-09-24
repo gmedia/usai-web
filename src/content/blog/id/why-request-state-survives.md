@@ -181,9 +181,11 @@ Jadi Usai bukan pilihan untuk endpoint panas yang CPU-bound, di mana setiap mikr
 ## Coba, dan coba bongkar
 
 ```bash
-pnpm dlx @sakaladev/create-usai my-app
-cd my-app && pnpm install && pnpm dev
+npm create @sakaladev/usai@latest my-app
+cd my-app && npm install && npm run dev
 ```
+
+Dengan pnpm: `pnpm dlx @sakaladev/create-usai my-app`, lalu `pnpm install && pnpm dev`. pnpm 12 baru memasang rilis baru setelah berumur sehari, jadi di hari rilis pakai npm untuk mendapat versi terbaru.
 
 Usai masih alpha, di versi 0.0.10. Ia sudah melewati soak 72 jam dan serangkaian kegagalan yang disengaja, tapi belum banyak bertemu developer dari luar proyek. Itulah eksperimen berikutnya. Kalau kamu mencobanya, kami ingin tahu di mana modelnya membingungkan, di mana ia menghalangimu, dan di mana ia menangkap bug yang tidak kamu sadari.
 

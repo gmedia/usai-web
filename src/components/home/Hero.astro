@@ -1,9 +1,9 @@
 ---
 import Rich from '../Rich.astro';
-import CopyCommand from '../CopyCommand.astro';
+import InstallCommands from '../InstallCommands.astro';
 import Icon from '../Icon.astro';
 import { t, localePath, type Lang } from '../../i18n';
-import { usai, install } from '../../config/site';
+import { usai } from '../../config/site';
 
 interface Props {
   lang: Lang;
@@ -50,7 +50,7 @@ const h = d.home.hero;
       </div>
 
       <div class="hero-in mt-8 max-w-xl" style="--i:5">
-        <CopyCommand cmd={install.create} {lang} label={h.installLabel} />
+        <InstallCommands {lang} label={h.installLabel} />
         <p class="mt-3 text-xs text-dim">{h.meaning}</p>
       </div>
     </div>
