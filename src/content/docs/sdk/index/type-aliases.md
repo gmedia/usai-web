@@ -16,6 +16,7 @@ source: "docs/sdk/index/type-aliases/"
 - [Type Alias: Method](/docs/sdk/index/type-aliases/method/)
 - [Type Alias: HttpHandlerResult&lt;T>](/docs/sdk/index/type-aliases/httphandlerresult/)
 - [Type Alias: EnvValues&lt;S extends | EnvDeclaration&lt;Record&lt;string, EnvField&lt;unknown>>> | Record&lt;string, EnvField&lt;unknown>>>](/docs/sdk/index/type-aliases/envvalues/)
+- [Type Alias: EnvValue](/docs/sdk/index/type-aliases/envvalue/)
 - [Type Alias: EnvKind](/docs/sdk/index/type-aliases/envkind/)
 - [Type Alias: Declare](/docs/sdk/index/type-aliases/declare/)
 - [Type Alias: AnySchema](/docs/sdk/index/type-aliases/anyschema/)
