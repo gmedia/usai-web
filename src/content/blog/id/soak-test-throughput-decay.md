@@ -3,9 +3,9 @@ title: Soak test 72 jam kami kehilangan 81% throughput-nya. Kami harus membuktik
 description: Soak tiga hari melayani 73,6 juta request tanpa satu pun 5xx, tapi tetap melambat dari 794 ke 154 request per detik. Penjelasan termudahnya database. Kami menjalankan run kontrol untuk memastikannya.
 translationKey: soak-test-throughput-decay
 lang: id
-date: 2026-09-29
+date: 2026-09-28
 author: Sakala maintainers
-draft: true
+draft: false
 tags: [soak-test, postgresql, reliability, runtime]
 series:
   name: Cara kerja Usai

@@ -3,9 +3,9 @@ title: Our 72-hour soak lost 81% of its throughput. We had to prove it wasn't th
 description: A three-day soak served 73.6 million requests without a single 5xx, and still slowed from 794 to 154 requests per second. The easy explanation was the database. We ran a control to find out.
 translationKey: soak-test-throughput-decay
 lang: en
-date: 2026-09-29
+date: 2026-09-28
 author: Sakala maintainers
-draft: true
+draft: false
 tags: [soak-test, postgresql, reliability, runtime]
 series:
   name: How Usai works
