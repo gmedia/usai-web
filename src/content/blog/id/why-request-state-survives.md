@@ -4,7 +4,7 @@ description: Sebuah request datang, membuat state yang bisa berubah, lalu selesa
 translationKey: why-request-state-survives
 lang: id
 date: 2026-09-24
-updated: 2026-09-25
+updated: 2026-09-28
 author: Sakala maintainers
 draft: false
 tags: [lifetimes, runtime, typescript, backend]
@@ -12,7 +12,7 @@ series:
   name: Cara kerja Usai
   part: 1
 evidence:
-  status: Usai v0.0.10, alpha. Kualifikasi produksi sedang berjalan; kontrak masih bisa berubah. Sweep-nya diukur pada 0.0.8.
+  status: Usai v0.0.15, alpha. Kualifikasi produksi sedang berjalan; kontrak masih bisa berubah. Sweep-nya diukur pada 0.0.8.
   setup: 'Probe correctness serta angka throughput dan CPU berasal dari sweep 23-09-2026: Xeon E5-2680 v4, server di-pin ke 8 CPU, PostgreSQL 18, enam kelas workload melawan Node, Node × 8, Bun, Deno, Rust axum, dan PHP-FPM.'
   supports:
     - Usai memberi setiap unit pekerjaan execution world yang baru. Counter di level module menjawab 1 di setiap request.
@@ -187,6 +187,6 @@ cd my-app && npm install && npm run dev
 
 Dengan pnpm: `pnpm dlx @sakaladev/create-usai my-app`, lalu `pnpm install && pnpm dev`. pnpm 12 baru memasang rilis baru setelah berumur sehari, jadi di hari rilis pakai npm untuk mendapat versi terbaru.
 
-Usai masih alpha, di versi 0.0.10. Ia sudah melewati soak 72 jam dan serangkaian kegagalan yang disengaja, tapi belum banyak bertemu developer dari luar proyek. Itulah eksperimen berikutnya. Kalau kamu mencobanya, kami ingin tahu di mana modelnya membingungkan, di mana ia menghalangimu, dan di mana ia menangkap bug yang tidak kamu sadari.
+Usai masih alpha, di versi 0.0.15. Ia sudah melewati soak 72 jam dan serangkaian kegagalan yang disengaja, tapi belum banyak bertemu developer dari luar proyek. Itulah eksperimen berikutnya. Kalau kamu mencobanya, kami ingin tahu di mana modelnya membingungkan, di mana ia menghalangimu, dan di mana ia menangkap bug yang tidak kamu sadari.
 
 Tulisan berikutnya di seri ini akan masuk lebih dalam: bagaimana world dibuat dengan murah, apa yang kami pelajari dari 73 juta request selama tiga hari, dan di mana Usai kalah.
