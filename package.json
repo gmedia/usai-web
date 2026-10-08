@@ -48,7 +48,7 @@
     "@types/react-dom": "^19.3.0",
     "pagefind": "1.5.2",
     "satori": "^0.35.0",
-    "shiki": "4.4.3",
+    "shiki": "4.5.0",
     "typescript": "^6.0.3"
   }
 }

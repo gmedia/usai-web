@@ -19,4 +19,5 @@ source: "docs/sdk/index/type-aliases/"
 - [Type Alias: EnvValue](/docs/sdk/index/type-aliases/envvalue/)
 - [Type Alias: EnvKind](/docs/sdk/index/type-aliases/envkind/)
 - [Type Alias: Declare](/docs/sdk/index/type-aliases/declare/)
+- [Type Alias: AppEnv](/docs/sdk/index/type-aliases/appenv/)
 - [Type Alias: AnySchema](/docs/sdk/index/type-aliases/anyschema/)
