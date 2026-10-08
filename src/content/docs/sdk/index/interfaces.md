@@ -27,6 +27,7 @@ source: "docs/sdk/index/interfaces/"
 - [Interface: SeederContext&lt;R = ResourceDeclaration>](/docs/sdk/index/interfaces/seedercontext/)
 - [Interface: RetryOptions](/docs/sdk/index/interfaces/retryoptions/)
 - [Interface: ResourceDeclaration&lt;Name extends string = string, Handle = unknown>](/docs/sdk/index/interfaces/resourcedeclaration/)
+- [Interface: Register](/docs/sdk/index/interfaces/register/)
 - [Interface: RawResponse](/docs/sdk/index/interfaces/rawresponse/)
 - [Interface: RawRequestBody](/docs/sdk/index/interfaces/rawrequestbody/)
 - [Interface: RawOptions&lt;R extends ResourceDeclaration = ResourceDeclaration, A extends AuthDeclaration | undefined = AuthDeclaration | undefined>](/docs/sdk/index/interfaces/rawoptions/)
