@@ -5,6 +5,7 @@ slug: "measurements"
 source: "docs/measurements/"
 ---
 - [Benchmarks — method](/docs/measurements/benchmarks/)
+- [Wasmtime 50: the vendor goes, the behaviour stays](/docs/measurements/2026-10-24-wasmtime-50/)
 - [Idle decommit: what it reclaims here, and why that is not the plateau](/docs/measurements/2026-09-26-idle-decommit/)
 - [The control run: 24 h with a dataset that does not grow (2026-09-23/24)](/docs/measurements/2026-09-24-bounded-soak/)
 - [Threat-model verification (2026-09-23)](/docs/measurements/2026-09-23-threat-verification/)
